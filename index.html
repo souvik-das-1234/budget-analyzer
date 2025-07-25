@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Marketing Budget Analyzer</title>
+    <title>Comprehensive Marketing Budget Analyzer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -84,8 +84,8 @@
 
     <header class="bg-white shadow-sm">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-            <h1 class="text-3xl font-bold tracking-tight text-slate-900">Lead Generation Budget & Strategy Analyzer</h1>
-            <p class="mt-1 text-slate-500">An interactive report to optimize ad spend and explore influencer marketing.</p>
+            <h1 class="text-3xl font-bold tracking-tight text-slate-900">Comprehensive Marketing Budget Analyzer</h1>
+            <p class="mt-1 text-slate-500">An interactive tool for strategic allocation of your marketing spend.</p>
         </div>
     </header>
 
@@ -93,49 +93,52 @@
         
         <section id="kpis" class="mb-12">
             <h2 class="text-2xl font-semibold text-slate-900 mb-4">Performance Snapshot</h2>
-            <p class="text-slate-600 mb-6">This analysis is based on your Meta Lead Form campaigns from April to June 2025. These key metrics form the foundation for our strategic recommendations.</p>
+            <p class="text-slate-600 mb-6">This analysis is based on your Meta campaigns from April to June 2025. These key metrics form the foundation for our strategic recommendations.</p>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div class="kpi-card text-center">
                     <p class="text-sm font-medium text-slate-500">Total Monthly Budget</p>
                     <p class="mt-1 text-4xl font-bold text-sky-600">₹55,000</p>
                 </div>
                 <div class="kpi-card text-center">
-                    <p class="text-sm font-medium text-slate-500">Average Cost Per Lead (CPL)</p>
+                    <p class="text-sm font-medium text-slate-500">Avg. Cost Per Lead (CPL)</p>
                     <p class="mt-1 text-4xl font-bold text-sky-600">₹106</p>
                 </div>
                 <div class="kpi-card text-center">
-                    <p class="text-sm font-medium text-slate-500">Total Spend Analyzed</p>
-                    <p class="mt-1 text-4xl font-bold text-slate-800">₹64,032</p>
+                    <p class="text-sm font-medium text-slate-500">Avg. Cost Per Follower (CPF)</p>
+                    <p class="mt-1 text-4xl font-bold text-sky-600">₹0.85</p>
                 </div>
                 <div class="kpi-card text-center">
-                    <p class="text-sm font-medium text-slate-500">Total Leads Analyzed</p>
-                    <p class="mt-1 text-4xl font-bold text-slate-800">604</p>
+                    <p class="text-sm font-medium text-slate-500">Leads/Followers Analyzed</p>
+                    <p class="mt-1 text-4xl font-bold text-slate-800">604 / ~5.8k</p>
                 </div>
             </div>
         </section>
 
         <section id="simulator" class="mb-12 bg-white p-6 sm:p-8 rounded-lg shadow-lg border border-slate-200">
             <h2 class="text-2xl font-semibold text-slate-900 mb-4">Interactive Budget Scenario Simulator</h2>
-            <p class="text-slate-600 mb-8 max-w-3xl">Drag the slider to adjust your monthly ad spend based on the report's total budget. The charts and figures will update in real-time to show how your allocation impacts projected leads and your influencer fund.</p>
+            <p class="text-slate-600 mb-8 max-w-3xl">A fixed budget of ₹5,000 is allocated for followers. Use the slider to split the remaining ₹50,000 between Lead Ads and your Influencer Fund.</p>
             
             <div class="mb-8">
-                <label for="budget-slider" class="block text-sm font-medium text-slate-700 mb-2">Ad Spend Allocation (Total Budget: ₹55,000)</label>
-                <input id="budget-slider" type="range" min="0" max="55000" value="37000" step="1000" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                <label for="budget-slider" class="block text-sm font-medium text-slate-700 mb-2">Lead Ad Spend Allocation (Remaining Budget: ₹50,000)</label>
+                <input id="budget-slider" type="range" min="0" max="50000" value="32000" step="1000" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
-                <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-6">
-                    <div class="p-6 bg-slate-50 rounded-lg border border-slate-200 text-center">
-                        <p class="text-lg font-medium text-slate-600">Ad Spend</p>
-                        <p id="ad-spend-value" class="text-4xl font-bold text-sky-700 mt-2">₹37,000</p>
+                <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-200 text-center">
+                        <p class="text-md font-medium text-slate-600">Lead Ad Spend</p>
+                        <p id="ad-spend-value" class="text-3xl font-bold text-sky-700 mt-2">₹32,000</p>
+                        <p id="projected-leads-value" class="text-sm text-sky-800 mt-1">~302 Leads</p>
                     </div>
-                    <div class="p-6 bg-slate-50 rounded-lg border border-slate-200 text-center">
-                        <p class="text-lg font-medium text-slate-600">Influencer Fund</p>
-                        <p id="influencer-spend-value" class="text-4xl font-bold text-emerald-600 mt-2">₹18,000</p>
+                     <div class="p-4 bg-slate-50 rounded-lg border border-slate-200 text-center">
+                        <p class="text-md font-medium text-slate-600">Follower Ad Spend</p>
+                        <p class="text-3xl font-bold text-orange-700 mt-2">₹5,000</p>
+                        <p id="projected-followers-value" class="text-sm text-orange-800 mt-1">~5,882 Followers</p>
                     </div>
-                    <div class="p-6 bg-sky-100 rounded-lg border border-sky-200 text-center">
-                        <p class="text-lg font-medium text-sky-800">Projected Leads</p>
-                        <p id="projected-leads-value" class="text-4xl font-bold text-sky-800 mt-2">~350</p>
+                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-200 text-center col-span-full sm:col-span-2">
+                        <p class="text-md font-medium text-slate-600">Remaining for Influencers</p>
+                        <p id="influencer-spend-value" class="text-3xl font-bold text-emerald-600 mt-2">₹18,000</p>
+                        <p class="text-sm text-emerald-800 mt-1">For brand awareness & partnerships</p>
                     </div>
                 </div>
                 <div class="lg:col-span-1">
@@ -147,32 +150,44 @@
         </section>
 
         <section id="calculator" class="mb-12 bg-white p-6 sm:p-8 rounded-lg shadow-lg border border-slate-200">
-            <h2 class="text-2xl font-semibold text-slate-900 mb-4">Custom Budget Calculator</h2>
-            <p class="text-slate-600 mb-8 max-w-3xl">Use this tool for your own planning. Enter your total budget, expected CPL, and lead goal to see a potential breakdown. All fields will update in real-time.</p>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <h2 class="text-2xl font-semibold text-slate-900 mb-4">Custom Budget & Goal Calculator</h2>
+            <p class="text-slate-600 mb-8 max-w-3xl">Plan your own budget. Enter your goals and expected costs to see the required spend and what's left for other initiatives.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
                 <div>
                     <label for="custom-total-budget" class="block text-sm font-medium text-slate-700">Your Total Budget (₹)</label>
                     <input type="number" id="custom-total-budget" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 sm:text-sm p-2" value="55000">
                 </div>
                 <div>
+                    <label for="custom-desired-leads" class="block text-sm font-medium text-slate-700">Desired Leads</label>
+                    <input type="number" id="custom-desired-leads" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 sm:text-sm p-2" value="300">
+                </div>
+                <div>
                     <label for="custom-cpl" class="block text-sm font-medium text-slate-700">Expected CPL (₹)</label>
                     <input type="number" id="custom-cpl" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 sm:text-sm p-2" value="106">
                 </div>
-                <div>
-                    <label for="custom-desired-leads" class="block text-sm font-medium text-slate-700">Desired No. of Leads</label>
-                    <input type="number" id="custom-desired-leads" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 sm:text-sm p-2" value="350">
+                 <div>
+                    <label for="custom-desired-followers" class="block text-sm font-medium text-slate-700">Desired Followers</label>
+                    <input type="number" id="custom-desired-followers" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 sm:text-sm p-2" value="5000">
+                </div>
+                 <div>
+                    <label for="custom-cpf" class="block text-sm font-medium text-slate-700">Expected CPF (₹)</label>
+                    <input type="number" id="custom-cpf" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 sm:text-sm p-2" value="0.85">
                 </div>
             </div>
             <div class="bg-slate-50 p-6 rounded-lg border border-slate-200">
                 <h3 class="font-semibold text-lg text-slate-800 mb-4">Calculated Breakdown</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div class="text-center p-4 bg-white rounded-lg border">
-                        <p class="text-slate-600">Required Ad Spend</p>
-                        <p id="calculator-ad-spend" class="text-3xl font-bold text-sky-700 mt-1">₹37,100</p>
+                        <p class="text-slate-600">Lead Ad Spend</p>
+                        <p id="calculator-ad-spend" class="text-3xl font-bold text-sky-700 mt-1">₹31,800</p>
+                    </div>
+                    <div class="text-center p-4 bg-white rounded-lg border">
+                        <p class="text-slate-600">Follower Ad Spend</p>
+                        <p id="calculator-follower-spend" class="text-3xl font-bold text-orange-700 mt-1">₹4,250</p>
                     </div>
                     <div class="text-center p-4 bg-white rounded-lg border">
                         <p class="text-slate-600">Remaining for Influencers</p>
-                        <p id="calculator-influencer-fund" class="text-3xl font-bold text-emerald-600 mt-1">₹17,900</p>
+                        <p id="calculator-influencer-fund" class="text-3xl font-bold text-emerald-600 mt-1">₹18,950</p>
                     </div>
                 </div>
                 <div id="calculator-message" class="mt-4 text-center text-sm font-medium text-red-600 h-5"></div>
@@ -182,14 +197,18 @@
         <section id="recommendation" class="mb-12">
             <h2 class="text-2xl font-semibold text-slate-900 mb-6">Our Recommendation (Based on Report Data)</h2>
             <div class="bg-sky-50 border-l-4 border-sky-500 p-6 rounded-r-lg">
-                <p class="text-slate-700 mb-4">To maintain a strong lead pipeline while exploring new growth channels, we recommend adopting the **Balanced Approach**. This strategy mitigates risk and positions you for long-term, diversified growth.</p>
-                <div class="mt-4 flex flex-col sm:flex-row gap-4">
+                <p class="text-slate-700 mb-4">For a balanced strategy, we recommend the following allocation of your ₹55,000 budget. This maintains strong lead generation, grows your audience, and leaves a healthy fund for brand-building with influencers.</p>
+                <div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div class="flex-1 p-4 bg-white rounded-lg shadow-sm border text-center">
-                        <p class="text-slate-500">Recommended Ad Spend</p>
-                        <p class="text-2xl font-bold text-sky-600">₹37,000</p>
+                        <p class="text-slate-500">Lead Ad Spend</p>
+                        <p class="text-2xl font-bold text-sky-600">₹32,000</p>
                     </div>
                     <div class="flex-1 p-4 bg-white rounded-lg shadow-sm border text-center">
-                        <p class="text-slate-500">Recommended Influencer Budget</p>
+                        <p class="text-slate-500">Follower Ad Spend</p>
+                        <p class="text-2xl font-bold text-orange-600">₹5,000</p>
+                    </div>
+                    <div class="flex-1 p-4 bg-white rounded-lg shadow-sm border text-center">
+                        <p class="text-slate-500">Influencer Fund</p>
                         <p class="text-2xl font-bold text-emerald-600">₹18,000</p>
                     </div>
                 </div>
@@ -198,25 +217,16 @@
 
         <section id="strategy" class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-                <h2 class="text-2xl font-semibold text-slate-900 mb-4">Launching Your Influencer Program</h2>
+                <h2 class="text-2xl font-semibold text-slate-900 mb-4">Next-Level Metrics to Track</h2>
                 <div class="space-y-4 text-slate-600">
-                    <p>An influencer program should not be measured by the same CPL as your ads. Its value lies in brand building, trust, and authentic reach. Focus on these keys to success.</p>
+                    <p>To measure true business impact, consider tracking these advanced metrics. They help you calculate your ultimate Return on Investment (ROI).</p>
                     <details class="bg-white p-4 rounded-lg shadow-sm border cursor-pointer">
-                        <summary class="font-semibold text-slate-800">Track the Right Metrics</summary>
-                        <ul class="mt-3 ml-4 space-y-2 list-disc list-inside">
-                            <li><strong>Brand Awareness:</strong> Reach & Impressions</li>
-                            <li><strong>Audience Growth:</strong> New Followers</li>
-                            <li><strong>Engagement:</strong> Likes, Comments, Shares</li>
-                            <li><strong>Conversions:</strong> Use unique discount codes or affiliate links</li>
-                        </ul>
+                        <summary class="font-semibold text-slate-800">Lead-to-Customer Conversion Rate (%)</summary>
+                        <p class="mt-3">What percentage of your leads from ads actually become paying customers? This is the most critical link between marketing spend and sales revenue.</p>
                     </details>
-                    <details class="bg-white p-4 rounded-lg shadow-sm border cursor-pointer" open>
-                        <summary class="font-semibold text-slate-800">Start Small & Test</summary>
-                        <p class="mt-3">Use the initial ₹18,000 to collaborate with a few relevant micro-influencers. Analyze what content and which creators resonate most effectively with your target audience before scaling up.</p>
-                    </details>
-                     <details class="bg-white p-4 rounded-lg shadow-sm border cursor-pointer">
-                        <summary class="font-semibold text-slate-800">Think Long-Term</summary>
-                        <p class="mt-3">Building authentic relationships with creators and seeing a significant return from influencer marketing is a marathon, not a sprint. Consistency is key.</p>
+                    <details class="bg-white p-4 rounded-lg shadow-sm border cursor-pointer">
+                        <summary class="font-semibold text-slate-800">Average Customer Value (ACV)</summary>
+                        <p class="mt-3">How much revenue, on average, does a new customer generate? When you know your ACV and your true cost to acquire a customer (from ad spend), you can calculate profitability.</p>
                     </details>
                 </div>
             </div>
@@ -227,22 +237,22 @@
                         <li class="flex items-start">
                             <div class="flex-shrink-0 bg-sky-600 text-white rounded-full h-8 w-8 flex items-center justify-center font-bold mr-4">1</div>
                             <div>
-                                <h3 class="font-semibold text-slate-800">Adjust Ad Budgets</h3>
-                                <p class="text-slate-600">Reallocate monthly lead generation ad budgets on Meta to a total of ₹37,000.</p>
+                                <h3 class="font-semibold text-slate-800">Implement Budget Split</h3>
+                                <p class="text-slate-600">Set up separate campaigns for leads and followers with the recommended budgets.</p>
                             </div>
                         </li>
                         <li class="flex items-start">
                             <div class="flex-shrink-0 bg-sky-600 text-white rounded-full h-8 w-8 flex items-center justify-center font-bold mr-4">2</div>
                             <div>
                                 <h3 class="font-semibold text-slate-800">Identify Influencers</h3>
-                                <p class="text-slate-600">Begin research and outreach to find potential partners within your industry and target regions.</p>
+                                <p class="text-slate-600">Begin research for partners who align with your brand, using the dedicated influencer fund.</p>
                             </div>
                         </li>
                         <li class="flex items-start">
                             <div class="flex-shrink-0 bg-sky-600 text-white rounded-full h-8 w-8 flex items-center justify-center font-bold mr-4">3</div>
                             <div>
-                                <h3 class="font-semibold text-slate-800">Define Pilot Program</h3>
-                                <p class="text-slate-600">Set clear goals, deliverables, and tracking mechanisms for the initial influencer campaign.</p>
+                                <h3 class="font-semibold text-slate-800">Track Advanced Metrics</h3>
+                                <p class="text-slate-600">Work with your sales team to start tracking lead conversion rates to measure true ROI.</p>
                             </div>
                         </li>
                     </ol>
@@ -261,32 +271,37 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const CPL_DEFAULT = 106;
+            const CPF_DEFAULT = 0.85;
             const TOTAL_BUDGET_DEFAULT = 55000;
+            const FOLLOWER_BUDGET_FIXED = 5000;
+            const REMAINING_BUDGET_SIMULATOR = TOTAL_BUDGET_DEFAULT - FOLLOWER_BUDGET_FIXED;
             const currencyFormatter = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 });
+            const numberFormatter = new Intl.NumberFormat('en-IN');
 
-            // Simulator Elements
             const slider = document.getElementById('budget-slider');
             const adSpendValue = document.getElementById('ad-spend-value');
             const influencerSpendValue = document.getElementById('influencer-spend-value');
             const projectedLeadsValue = document.getElementById('projected-leads-value');
+            const projectedFollowersValue = document.getElementById('projected-followers-value');
             const budgetChartCtx = document.getElementById('budget-chart').getContext('2d');
 
-            // Calculator Elements
             const customTotalBudgetEl = document.getElementById('custom-total-budget');
             const customCplEl = document.getElementById('custom-cpl');
             const customDesiredLeadsEl = document.getElementById('custom-desired-leads');
+            const customCpfEl = document.getElementById('custom-cpf');
+            const customDesiredFollowersEl = document.getElementById('custom-desired-followers');
             const calculatorAdSpendEl = document.getElementById('calculator-ad-spend');
+            const calculatorFollowerSpendEl = document.getElementById('calculator-follower-spend');
             const calculatorInfluencerFundEl = document.getElementById('calculator-influencer-fund');
             const calculatorMessageEl = document.getElementById('calculator-message');
 
-            // Simulator Chart
             const budgetChart = new Chart(budgetChartCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Ad Spend', 'Influencer Fund'],
+                    labels: ['Lead Ads', 'Follower Ads', 'Influencer Fund'],
                     datasets: [{
-                        data: [37000, 18000],
-                        backgroundColor: ['#0284c7', '#059669'],
+                        data: [32000, 5000, 18000],
+                        backgroundColor: ['#0284c7', '#ea580c', '#059669'],
                         borderColor: '#f8fafc',
                         borderWidth: 4,
                         hoverOffset: 8
@@ -297,47 +312,62 @@
                     maintainAspectRatio: false,
                     cutout: '65%',
                     plugins: {
-                        legend: { position: 'bottom', labels: { padding: 20, font: { size: 14, family: 'Inter' } } },
+                        legend: { 
+                            position: 'bottom', 
+                            labels: { 
+                                padding: 20, 
+                                font: { 
+                                    size: 14, 
+                                    family: 'Inter' 
+                                } 
+                            } 
+                        },
                         tooltip: {
                             callbacks: {
-                                label: (context) => `${context.label}: ${currencyFormatter.format(context.parsed)}`
+                                label: function(context) {
+                                    return `${context.label}: ${currencyFormatter.format(context.parsed)}`;
+                                }
                             }
                         }
                     }
                 }
             });
 
-            // Simulator Logic
             function updateSimulatorValues() {
                 const adSpend = parseInt(slider.value);
-                const influencerSpend = TOTAL_BUDGET_DEFAULT - adSpend;
+                const influencerSpend = REMAINING_BUDGET_SIMULATOR - adSpend;
                 const projectedLeads = Math.round(adSpend / CPL_DEFAULT);
+                const projectedFollowers = Math.round(FOLLOWER_BUDGET_FIXED / CPF_DEFAULT);
 
                 adSpendValue.textContent = currencyFormatter.format(adSpend);
                 influencerSpendValue.textContent = currencyFormatter.format(influencerSpend);
-                projectedLeadsValue.textContent = `~${projectedLeads}`;
+                projectedLeadsValue.textContent = `~${numberFormatter.format(projectedLeads)} Leads`;
+                projectedFollowersValue.textContent = `~${numberFormatter.format(projectedFollowers)} Followers`;
 
-                budgetChart.data.datasets[0].data[0] = adSpend;
-                budgetChart.data.datasets[0].data[1] = influencerSpend;
+                budgetChart.data.datasets[0].data = [adSpend, FOLLOWER_BUDGET_FIXED, influencerSpend];
                 budgetChart.update();
             }
 
-            // Calculator Logic
             function updateCalculator() {
                 const totalBudget = parseFloat(customTotalBudgetEl.value) || 0;
                 const cpl = parseFloat(customCplEl.value) || 0;
                 const desiredLeads = parseInt(customDesiredLeadsEl.value) || 0;
+                const cpf = parseFloat(customCpfEl.value) || 0;
+                const desiredFollowers = parseInt(customDesiredFollowersEl.value) || 0;
 
-                const requiredAdSpend = desiredLeads * cpl;
-                const influencerFund = totalBudget - requiredAdSpend;
+                const requiredLeadSpend = desiredLeads * cpl;
+                const requiredFollowerSpend = desiredFollowers * cpf;
+                const totalRequiredSpend = requiredLeadSpend + requiredFollowerSpend;
+                const influencerFund = totalBudget - totalRequiredSpend;
 
-                calculatorAdSpendEl.textContent = currencyFormatter.format(requiredAdSpend);
+                calculatorAdSpendEl.textContent = currencyFormatter.format(requiredLeadSpend);
+                calculatorFollowerSpendEl.textContent = currencyFormatter.format(requiredFollowerSpend);
                 
                 if (influencerFund < 0) {
                     calculatorInfluencerFundEl.textContent = currencyFormatter.format(0);
                     calculatorInfluencerFundEl.classList.remove('text-emerald-600');
                     calculatorInfluencerFundEl.classList.add('text-red-600');
-                    calculatorMessageEl.textContent = `Ad spend exceeds total budget by ${currencyFormatter.format(Math.abs(influencerFund))}.`;
+                    calculatorMessageEl.textContent = `Required spend exceeds total budget by ${currencyFormatter.format(Math.abs(influencerFund))}.`;
                 } else {
                     calculatorInfluencerFundEl.textContent = currencyFormatter.format(influencerFund);
                     calculatorInfluencerFundEl.classList.add('text-emerald-600');
@@ -346,13 +376,11 @@
                 }
             }
 
-            // Event Listeners
             slider.addEventListener('input', updateSimulatorValues);
-            [customTotalBudgetEl, customCplEl, customDesiredLeadsEl].forEach(el => {
+            [customTotalBudgetEl, customCplEl, customDesiredLeadsEl, customCpfEl, customDesiredFollowersEl].forEach(el => {
                 el.addEventListener('input', updateCalculator);
             });
 
-            // Initial calls
             updateSimulatorValues();
             updateCalculator();
         });
