@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Marketing Budget Analyzer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .kpi-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
+        }
+        .slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: #0284c7;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 0 0 1px #cbd5e1;
+        }
+        input[type='range']::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: #0284c7;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 0 0 1px #cbd5e1;
+            margin-top: -8px; 
+        }
+        input[type='range']::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            background: #0284c7;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 0 0 1px #cbd5e1;
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 280px;
+            width: 280px;
+        }
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+          -webkit-appearance: none; 
+          margin: 0; 
+        }
+        input[type=number] {
+          -moz-appearance: textfield;
+        }
+        @media (min-width: 640px) {
+            .chart-container {
+                height: 320px;
+                width: 320px;
+            }
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <header class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <h1 class="text-3xl font-bold tracking-tight text-slate-900">Lead Generation Budget & Strategy Analyzer</h1>
+            <p class="mt-1 text-slate-500">An interactive report to optimize ad spend and explore influencer marketing.</p>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        
+        <section id="kpis" class="mb-12">
+            <h2 class="text-2xl font-semibold text-slate-900 mb-4">Performance Snapshot</h2>
+            <p class="text-slate-600 mb-6">This analysis is based on your Meta Lead Form campaigns from April to June 2025. These key metrics form the foundation for our strategic recommendations.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="kpi-card text-center">
+                    <p class="text-sm font-medium text-slate-500">Total Monthly Budget</p>
+                    <p class="mt-1 text-4xl font-bold text-sky-600">₹55,000</p>
+                </div>
+                <div class="kpi-card text-center">
+                    <p class="text-sm font-medium text-slate-500">Average Cost Per Lead (CPL)</p>
+                    <p class="mt-1 text-4xl font-bold text-sky-600">₹106</p>
+                </div>
+                <div class="kpi-card text-center">
+                    <p class="text-sm font-medium text-slate-500">Total Spend Analyzed</p>
+                    <p class="mt-1 text-4xl font-bold text-slate-800">₹64,032</p>
+                </div>
+                <div class="kpi-card text-center">
+                    <p class="text-sm font-medium text-slate-500">Total Leads Analyzed</p>
+                    <p class="mt-1 text-4xl font-bold text-slate-800">604</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="simulator" class="mb-12 bg-white p-6 sm:p-8 rounded-lg shadow-lg border border-slate-200">
+            <h2 class="text-2xl font-semibold text-slate-900 mb-4">Interactive Budget Scenario Simulator</h2>
+            <p class="text-slate-600 mb-8 max-w-3xl">Drag the slider to adjust your monthly ad spend based on the report's total budget. The charts and figures will update in real-time to show how your allocation impacts projected leads and your influencer fund.</p>
+            
+            <div class="mb-8">
+                <label for="budget-slider" class="block text-sm font-medium text-slate-700 mb-2">Ad Spend Allocation (Total Budget: ₹55,000)</label>
+                <input id="budget-slider" type="range" min="0" max="55000" value="37000" step="1000" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+                <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div class="p-6 bg-slate-50 rounded-lg border border-slate-200 text-center">
+                        <p class="text-lg font-medium text-slate-600">Ad Spend</p>
+                        <p id="ad-spend-value" class="text-4xl font-bold text-sky-700 mt-2">₹37,000</p>
+                    </div>
+                    <div class="p-6 bg-slate-50 rounded-lg border border-slate-200 text-center">
+                        <p class="text-lg font-medium text-slate-600">Influencer Fund</p>
+                        <p id="influencer-spend-value" class="text-4xl font-bold text-emerald-600 mt-2">₹18,000</p>
+                    </div>
+                    <div class="p-6 bg-sky-100 rounded-lg border border-sky-200 text-center">
+                        <p class="text-lg font-medium text-sky-800">Projected Leads</p>
+                        <p id="projected-leads-value" class="text-4xl font-bold text-sky-800 mt-2">~350</p>
+                    </div>
+                </div>
+                <div class="lg:col-span-1">
+                    <div class="chart-container">
+                        <canvas id="budget-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="calculator" class="mb-12 bg-white p-6 sm:p-8 rounded-lg shadow-lg border border-slate-200">
+            <h2 class="text-2xl font-semibold text-slate-900 mb-4">Custom Budget Calculator</h2>
+            <p class="text-slate-600 mb-8 max-w-3xl">Use this tool for your own planning. Enter your total budget, expected CPL, and lead goal to see a potential breakdown. All fields will update in real-time.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div>
+                    <label for="custom-total-budget" class="block text-sm font-medium text-slate-700">Your Total Budget (₹)</label>
+                    <input type="number" id="custom-total-budget" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 sm:text-sm p-2" value="55000">
+                </div>
+                <div>
+                    <label for="custom-cpl" class="block text-sm font-medium text-slate-700">Expected CPL (₹)</label>
+                    <input type="number" id="custom-cpl" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 sm:text-sm p-2" value="106">
+                </div>
+                <div>
+                    <label for="custom-desired-leads" class="block text-sm font-medium text-slate-700">Desired No. of Leads</label>
+                    <input type="number" id="custom-desired-leads" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 sm:text-sm p-2" value="350">
+                </div>
+            </div>
+            <div class="bg-slate-50 p-6 rounded-lg border border-slate-200">
+                <h3 class="font-semibold text-lg text-slate-800 mb-4">Calculated Breakdown</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="text-center p-4 bg-white rounded-lg border">
+                        <p class="text-slate-600">Required Ad Spend</p>
+                        <p id="calculator-ad-spend" class="text-3xl font-bold text-sky-700 mt-1">₹37,100</p>
+                    </div>
+                    <div class="text-center p-4 bg-white rounded-lg border">
+                        <p class="text-slate-600">Remaining for Influencers</p>
+                        <p id="calculator-influencer-fund" class="text-3xl font-bold text-emerald-600 mt-1">₹17,900</p>
+                    </div>
+                </div>
+                <div id="calculator-message" class="mt-4 text-center text-sm font-medium text-red-600 h-5"></div>
+            </div>
+        </section>
+        
+        <section id="recommendation" class="mb-12">
+            <h2 class="text-2xl font-semibold text-slate-900 mb-6">Our Recommendation (Based on Report Data)</h2>
+            <div class="bg-sky-50 border-l-4 border-sky-500 p-6 rounded-r-lg">
+                <p class="text-slate-700 mb-4">To maintain a strong lead pipeline while exploring new growth channels, we recommend adopting the **Balanced Approach**. This strategy mitigates risk and positions you for long-term, diversified growth.</p>
+                <div class="mt-4 flex flex-col sm:flex-row gap-4">
+                    <div class="flex-1 p-4 bg-white rounded-lg shadow-sm border text-center">
+                        <p class="text-slate-500">Recommended Ad Spend</p>
+                        <p class="text-2xl font-bold text-sky-600">₹37,000</p>
+                    </div>
+                    <div class="flex-1 p-4 bg-white rounded-lg shadow-sm border text-center">
+                        <p class="text-slate-500">Recommended Influencer Budget</p>
+                        <p class="text-2xl font-bold text-emerald-600">₹18,000</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="strategy" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+                <h2 class="text-2xl font-semibold text-slate-900 mb-4">Launching Your Influencer Program</h2>
+                <div class="space-y-4 text-slate-600">
+                    <p>An influencer program should not be measured by the same CPL as your ads. Its value lies in brand building, trust, and authentic reach. Focus on these keys to success.</p>
+                    <details class="bg-white p-4 rounded-lg shadow-sm border cursor-pointer">
+                        <summary class="font-semibold text-slate-800">Track the Right Metrics</summary>
+                        <ul class="mt-3 ml-4 space-y-2 list-disc list-inside">
+                            <li><strong>Brand Awareness:</strong> Reach & Impressions</li>
+                            <li><strong>Audience Growth:</strong> New Followers</li>
+                            <li><strong>Engagement:</strong> Likes, Comments, Shares</li>
+                            <li><strong>Conversions:</strong> Use unique discount codes or affiliate links</li>
+                        </ul>
+                    </details>
+                    <details class="bg-white p-4 rounded-lg shadow-sm border cursor-pointer" open>
+                        <summary class="font-semibold text-slate-800">Start Small & Test</summary>
+                        <p class="mt-3">Use the initial ₹18,000 to collaborate with a few relevant micro-influencers. Analyze what content and which creators resonate most effectively with your target audience before scaling up.</p>
+                    </details>
+                     <details class="bg-white p-4 rounded-lg shadow-sm border cursor-pointer">
+                        <summary class="font-semibold text-slate-800">Think Long-Term</summary>
+                        <p class="mt-3">Building authentic relationships with creators and seeing a significant return from influencer marketing is a marathon, not a sprint. Consistency is key.</p>
+                    </details>
+                </div>
+            </div>
+            <div>
+                <h2 class="text-2xl font-semibold text-slate-900 mb-4">Proposed Next Steps</h2>
+                <div class="bg-white p-6 rounded-lg shadow-sm border">
+                    <ol class="space-y-4">
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 bg-sky-600 text-white rounded-full h-8 w-8 flex items-center justify-center font-bold mr-4">1</div>
+                            <div>
+                                <h3 class="font-semibold text-slate-800">Adjust Ad Budgets</h3>
+                                <p class="text-slate-600">Reallocate monthly lead generation ad budgets on Meta to a total of ₹37,000.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 bg-sky-600 text-white rounded-full h-8 w-8 flex items-center justify-center font-bold mr-4">2</div>
+                            <div>
+                                <h3 class="font-semibold text-slate-800">Identify Influencers</h3>
+                                <p class="text-slate-600">Begin research and outreach to find potential partners within your industry and target regions.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 bg-sky-600 text-white rounded-full h-8 w-8 flex items-center justify-center font-bold mr-4">3</div>
+                            <div>
+                                <h3 class="font-semibold text-slate-800">Define Pilot Program</h3>
+                                <p class="text-slate-600">Set clear goals, deliverables, and tracking mechanisms for the initial influencer campaign.</p>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-800 text-slate-400 mt-12">
+        <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 text-center text-sm">
+            <p>Strategic Analysis Report | Generated on July 25, 2025</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const CPL_DEFAULT = 106;
+            const TOTAL_BUDGET_DEFAULT = 55000;
+            const currencyFormatter = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 });
+
+            // Simulator Elements
+            const slider = document.getElementById('budget-slider');
+            const adSpendValue = document.getElementById('ad-spend-value');
+            const influencerSpendValue = document.getElementById('influencer-spend-value');
+            const projectedLeadsValue = document.getElementById('projected-leads-value');
+            const budgetChartCtx = document.getElementById('budget-chart').getContext('2d');
+
+            // Calculator Elements
+            const customTotalBudgetEl = document.getElementById('custom-total-budget');
+            const customCplEl = document.getElementById('custom-cpl');
+            const customDesiredLeadsEl = document.getElementById('custom-desired-leads');
+            const calculatorAdSpendEl = document.getElementById('calculator-ad-spend');
+            const calculatorInfluencerFundEl = document.getElementById('calculator-influencer-fund');
+            const calculatorMessageEl = document.getElementById('calculator-message');
+
+            // Simulator Chart
+            const budgetChart = new Chart(budgetChartCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Ad Spend', 'Influencer Fund'],
+                    datasets: [{
+                        data: [37000, 18000],
+                        backgroundColor: ['#0284c7', '#059669'],
+                        borderColor: '#f8fafc',
+                        borderWidth: 4,
+                        hoverOffset: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '65%',
+                    plugins: {
+                        legend: { position: 'bottom', labels: { padding: 20, font: { size: 14, family: 'Inter' } } },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => `${context.label}: ${currencyFormatter.format(context.parsed)}`
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Simulator Logic
+            function updateSimulatorValues() {
+                const adSpend = parseInt(slider.value);
+                const influencerSpend = TOTAL_BUDGET_DEFAULT - adSpend;
+                const projectedLeads = Math.round(adSpend / CPL_DEFAULT);
+
+                adSpendValue.textContent = currencyFormatter.format(adSpend);
+                influencerSpendValue.textContent = currencyFormatter.format(influencerSpend);
+                projectedLeadsValue.textContent = `~${projectedLeads}`;
+
+                budgetChart.data.datasets[0].data[0] = adSpend;
+                budgetChart.data.datasets[0].data[1] = influencerSpend;
+                budgetChart.update();
+            }
+
+            // Calculator Logic
+            function updateCalculator() {
+                const totalBudget = parseFloat(customTotalBudgetEl.value) || 0;
+                const cpl = parseFloat(customCplEl.value) || 0;
+                const desiredLeads = parseInt(customDesiredLeadsEl.value) || 0;
+
+                const requiredAdSpend = desiredLeads * cpl;
+                const influencerFund = totalBudget - requiredAdSpend;
+
+                calculatorAdSpendEl.textContent = currencyFormatter.format(requiredAdSpend);
+                
+                if (influencerFund < 0) {
+                    calculatorInfluencerFundEl.textContent = currencyFormatter.format(0);
+                    calculatorInfluencerFundEl.classList.remove('text-emerald-600');
+                    calculatorInfluencerFundEl.classList.add('text-red-600');
+                    calculatorMessageEl.textContent = `Ad spend exceeds total budget by ${currencyFormatter.format(Math.abs(influencerFund))}.`;
+                } else {
+                    calculatorInfluencerFundEl.textContent = currencyFormatter.format(influencerFund);
+                    calculatorInfluencerFundEl.classList.add('text-emerald-600');
+                    calculatorInfluencerFundEl.classList.remove('text-red-600');
+                    calculatorMessageEl.textContent = '';
+                }
+            }
+
+            // Event Listeners
+            slider.addEventListener('input', updateSimulatorValues);
+            [customTotalBudgetEl, customCplEl, customDesiredLeadsEl].forEach(el => {
+                el.addEventListener('input', updateCalculator);
+            });
+
+            // Initial calls
+            updateSimulatorValues();
+            updateCalculator();
+        });
+    </script>
+
+</body>
+</html>
