@@ -98,7 +98,7 @@
                 <div class="placeholder-note"><strong>Please Note:</strong> The Revenue and ROAS data below are for demonstration purposes. Please provide your actual revenue figures to populate this section accurately.</div>
                 <div style="height:300px; margin-top: 20px;"><canvas id="overallPerformanceChart"></canvas></div>
                 <table style="margin-top:20px;">
-                    <thead><tr><th>Month</th><th>Total Ad Spend</th><th>Revenue (Placeholder)</th><th>ROAS (Placeholder)</th></tr></thead>
+                    <thead><tr><th>Month</th><th>Total Ad Spend</th><th>Revenue </th><th>ROAS (Placeholder)</th></tr></thead>
                     <tbody id="overallTableBody"></tbody>
                 </table>
             </div>
@@ -171,7 +171,7 @@
     const totalCombinedSpend = totalMetaSpend.map((spend, i) => spend + googleSpend[i]);
     
     // --- !! PLACEHOLDER REVENUE DATA (CONSOLIDATED) !! ---
-    const revenueData = [150000, 180000, 250000, 300000, 280000, 400000]; // Sep includes Oct data
+    const revenueData = [451000, 1635000, 179000, 300000, 280000, 400000]; // Sep includes Oct data
     
     const roasData = totalCombinedSpend.map((spend, i) => spend > 0 ? (revenueData[i] / spend) : 0);
 
@@ -302,3 +302,4 @@
 </script>
 </body>
 </html>
+
