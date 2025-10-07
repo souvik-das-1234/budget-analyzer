@@ -27,18 +27,18 @@
         /* Layout Grid */
         .main-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             grid-template-rows: auto;
             grid-template-areas:
-                "kpi1 kpi2 kpi3 kpi4"
-                "overall overall overall overall"
-                "leadgen leadgen leadgen leadgen"
-                "compare compare forecast forecast"
-                "table chart chart chart";
+                "kpi1 kpi3 kpi_roas"
+                "overall overall overall"
+                "leadgen leadgen leadgen"
+                "compare compare forecast"
+                "table chart chart";
             gap: 20px;
         }
         
-        #kpi1 { grid-area: kpi1; } #kpi2 { grid-area: kpi2; } #kpi3 { grid-area: kpi3; } #kpi4 { grid-area: kpi4; }
+        #kpi1 { grid-area: kpi1; } #kpi3 { grid-area: kpi3; } #kpi_roas { grid-area: kpi_roas; }
         #overall { grid-area: overall; } #leadgen { grid-area: leadgen; } #compare { grid-area: compare; }
         #forecast { grid-area: forecast; } #table { grid-area: table; } #chart { grid-area: chart; }
 
@@ -74,13 +74,13 @@
         @media (max-width: 1200px) {
             .main-grid {
                 grid-template-columns: 1fr 1fr;
-                grid-template-areas: "kpi1 kpi2" "kpi3 kpi4" "overall overall" "leadgen leadgen" "compare compare" "forecast forecast" "chart chart" "table table";
+                grid-template-areas: "kpi1 kpi3" "kpi_roas ." "overall overall" "leadgen leadgen" "compare compare" "forecast forecast" "chart chart" "table table";
             }
         }
         @media (max-width: 992px) { .historical-grid { grid-template-columns: 1fr; } }
         @media (max-width: 768px) {
             body { padding: 10px; }
-            .main-grid { grid-template-columns: 1fr; grid-template-areas: "kpi1" "kpi2" "kpi3" "kpi4" "overall" "leadgen" "compare" "forecast" "chart" "table"; }
+            .main-grid { grid-template-columns: 1fr; grid-template-areas: "kpi1" "kpi3" "kpi_roas" "overall" "leadgen" "compare" "forecast" "chart" "table"; }
         }
     </style>
 </head>
@@ -93,9 +93,8 @@
 
         <div class="main-grid">
             <div id="kpi1" class="card kpi-card"><h3>Avg. Cost Per Lead</h3><p class="value">₹77</p></div>
-            <div id="kpi2" class="card kpi-card"><h3>Avg. Cost Per Follower</h3><p class="value">₹1.85</p></div>
             <div id="kpi3" class="card kpi-card"><h3>Total Leads (6 Mo)</h3><p class="value">1,354</p></div>
-            <div id="kpi4" class="card kpi-card"><h3>Total Followers (6 Mo)</h3><p class="value">13,912</p></div>
+            <div id="kpi_roas" class="card kpi-card"><h3>Overall ROAS (Placeholder)</h3><p class="value" id="overallRoasKpi">7.88x</p></div>
             
             <div id="overall" class="card">
                 <h2 class="card-header">Overall Monthly Performance (Apr-Sep)</h2>
@@ -165,7 +164,6 @@
 <script>
     const TOTAL_BUDGET = 55000;
     const CPL = 77;
-    const CPF = 1.85; // Cost Per Follower - calculated from data
 
     const formatCurrency = (value) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 }).format(value);
 
@@ -193,6 +191,12 @@
         overallTableBody.appendChild(row);
     });
     
+    // Calculate and display Overall ROAS KPI
+    const totalRevenue = revenueData.reduce((a, b) => a + b, 0);
+    const totalSpendOverall = totalCombinedSpend.reduce((a, b) => a + b, 0);
+    const overallRoas = totalSpendOverall > 0 ? (totalRevenue / totalSpendOverall) : 0;
+    document.getElementById('overallRoasKpi').innerText = `${overallRoas.toFixed(2)}x`;
+
     new Chart(document.getElementById('overallPerformanceChart'), {
         type: 'bar',
         data: {
@@ -256,10 +260,14 @@
 
         const leadDiffEl = document.getElementById('leadDiff'), influencerDiffEl = document.getElementById('influencerDiff');
         const leadDiff = leadsA - leadsB, influencerDiff = influencerA - influencerB;
-        leadDiffEl.innerText = `${leadDiff > 0 ? '+' : ''}${leadDiff.toLocaleString('en-IN')}`;
-        leadDiffEl.className = leadDiff >= 0 ? 'diff positive' : 'diff negative';
-        influencerDiffEl.innerText = `${influencerDiff > 0 ? '+' : ''}${formatCurrency(influencerDiff)}`;
-        influencerDiffEl.className = influencerDiff >= 0 ? 'diff positive' : 'diff negative';
+        if(leadDiffEl) {
+            leadDiffEl.innerText = `${leadDiff > 0 ? '+' : ''}${leadDiff.toLocaleString('en-IN')}`;
+            leadDiffEl.className = leadDiff >= 0 ? 'diff positive' : 'diff negative';
+        }
+        if(influencerDiffEl){
+            influencerDiffEl.innerText = `${influencerDiff > 0 ? '+' : ''}${formatCurrency(influencerDiff)}`;
+            influencerDiffEl.className = influencerDiff >= 0 ? 'diff positive' : 'diff negative';
+        }
     }
     sliderA.addEventListener('input', updateComparisonTool);
     sliderB.addEventListener('input', updateComparisonTool);
