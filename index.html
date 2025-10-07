@@ -59,9 +59,6 @@
         .output-box { background-color: var(--bg-color); padding: 10px; border-radius: 5px; }
         .output-box h4 { margin: 0 0 5px 0; font-size: 0.8em; font-weight: 500; color: var(--light-text-color); }
         .output-box p { margin: 0; font-size: 1.2em; font-weight: 600; color: var(--primary-color); }
-        .summary-item { display: flex; justify-content: space-between; font-size: 0.95em; margin-bottom: 5px;}
-        .summary-item .diff.positive { color: var(--success-color); }
-        .summary-item .diff.negative { color: var(--warning-color); }
         .placeholder-note { font-size: 0.9em; color: var(--warning-color); background-color: #fff9e6; padding: 10px; border-radius: 5px; margin-top: 10px; border-left: 3px solid var(--warning-color); }
         .insight-text { font-size: 0.9em; color: var(--accent-color); background-color: #ecf0f1; padding: 10px; border-radius: 5px; margin-top: 10px; border-left: 3px solid var(--accent-color); }
         
@@ -92,7 +89,7 @@
         </header>
 
         <div class="main-grid">
-            <div id="kpi1" class="card kpi-card"><h3>Avg. Cost Per Lead</h3><p class="value" id="kpiCPL">₹82</p></div>
+            <div id="kpi1" class="card kpi-card"><h3>Avg. Cost Per Lead</h3><p class="value" id="kpiCPL">₹63</p></div>
             <div id="kpi3" class="card kpi-card"><h3>Total Leads (All Time)</h3><p class="value" id="kpiTotalLeads">1,680</p></div>
             <div id="kpi_roas" class="card kpi-card"><h3>Overall ROAS (Placeholder)</h3><p class="value" id="overallRoasKpi">8.17x</p></div>
             
@@ -112,8 +109,8 @@
                     <div><div style="height:300px;"><canvas id="historicalChart"></canvas></div></div>
                     <div class="quarterly-summary">
                         <div class="output-box"><div class="label">Q2 (Apr-Jun) Summary</div><p class="value">655 Leads</p><span>Avg. CPL: <strong>₹108</strong></span></div>
-                        <div class="output-box"><div class="label">Q3 (Jul-Sep) Summary</div><p class="value">699 Leads</p><span>Avg. CPL: <strong style="color: var(--success-color);">₹48</strong></span></div>
-                        <p class="insight-text"><strong>Key Insight:</strong> Your campaign efficiency improved dramatically in Q3, with the Cost Per Lead (CPL) dropping by over 55% while generating more leads for less spend.</p>
+                        <div class="output-box"><div class="label">Q3 (Jul-Sep) Summary</div><p class="value">880 Leads</p><span>Avg. CPL: <strong style="color: var(--success-color);">₹25</strong></span></div>
+                        <p class="insight-text"><strong>Key Insight:</strong> Your campaign efficiency improved dramatically in Q3. The consolidated September campaign was highly effective, bringing the quarterly CPL down significantly.</p>
                     </div>
                 </div>
             </div>
@@ -137,7 +134,7 @@
                 <div class="tool-section">
                     <label for="leadTarget">Enter Monthly Lead Target:</label><input type="number" id="leadTarget" value="500">
                 </div>
-                 <div class="output-box"><h4>Predicted Monthly Budget</h4><p id="predictedMonthly">₹41,000</p></div>
+                 <div class="output-box"><h4>Predicted Monthly Budget</h4><p id="predictedMonthly">₹31,500</p></div>
             </div>
 
             <div id="chart" class="card">
@@ -161,20 +158,20 @@
     </div>
 
 <script>
+    // UPDATED CPL from new data analysis
+    const CPL = 63;
     const TOTAL_BUDGET = 55000;
-    // UPDATED CPL from new data
-    const CPL = 82;
 
     const formatCurrency = (value) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 }).format(value);
 
-    // --- Overall Performance Data (UPDATED) ---
-    const monthlyLabels = ['April', 'May', 'June', 'July', 'August', 'September', 'Oct (MTD)'];
-    const totalMetaSpend = [29600, 29848, 29778, 22230, 22612, 12629, 992];
-    const googleSpend = [15000, 15000, 15000, 15000, 15000, 15000, 0]; 
+    // --- Overall Performance Data (UPDATED & CONSOLIDATED) ---
+    const monthlyLabels = ['April', 'May', 'June', 'July', 'August', 'September'];
+    const totalMetaSpend = [29600, 29848, 29778, 22230, 22612, 13621]; // Sep includes Oct data
+    const googleSpend = [15000, 15000, 15000, 15000, 15000, 15000]; 
     const totalCombinedSpend = totalMetaSpend.map((spend, i) => spend + googleSpend[i]);
     
-    // --- !! PLACEHOLDER REVENUE DATA (EXTENDED) !! ---
-    const revenueData = [150000, 180000, 250000, 300000, 280000, 350000, 50000];
+    // --- !! PLACEHOLDER REVENUE DATA (CONSOLIDATED) !! ---
+    const revenueData = [150000, 180000, 250000, 300000, 280000, 400000]; // Sep includes Oct data
     
     const roasData = totalCombinedSpend.map((spend, i) => spend > 0 ? (revenueData[i] / spend) : 0);
 
@@ -190,7 +187,6 @@
         overallTableBody.appendChild(row);
     });
     
-    // Calculate and display Overall ROAS KPI
     const totalRevenue = revenueData.reduce((a, b) => a + b, 0);
     const totalSpendOverall = totalCombinedSpend.reduce((a, b) => a + b, 0);
     const overallRoas = totalSpendOverall > 0 ? (totalRevenue / totalSpendOverall) : 0;
@@ -215,12 +211,12 @@
         }
     });
 
-    // --- Lead Generation Deep Dive Data & Chart (UPDATED) ---
+    // --- Lead Generation Deep Dive Data & Chart (UPDATED, CONSOLIDATED & SIMPLIFIED CHART) ---
     const historicalData = {
-        labels: ['April', 'May', 'June', 'July', 'August', 'September', 'Oct (MTD)'],
-        spend: [23778, 23373, 23274, 13137, 15542, 4961, 992],
-        leads: [187, 275, 193, 254, 266, 179, 326],
-        cpl: [127, 85, 121, 52, 58, 28, 3] // CPL for October seems extremely low, reflecting data.
+        labels: ['April', 'May', 'June', 'July', 'August', 'September'],
+        spend: [23778, 23373, 23274, 13137, 15542, 5953], // Sep includes Oct
+        leads: [187, 275, 193, 254, 266, 505], // Sep includes Oct
+        cpl: [127, 85, 121, 52, 58, 12] // Sep includes Oct
     };
     const totalLeadsAllTime = historicalData.leads.reduce((a,b) => a+b, 0);
     document.getElementById('kpiCPL').innerText = formatCurrency(CPL);
@@ -231,15 +227,27 @@
         data: {
             labels: historicalData.labels,
             datasets: [
-                { label: 'Ad Spend', data: historicalData.spend, backgroundColor: 'rgba(127, 140, 141, 0.4)', yAxisID: 'y' },
-                { label: 'Leads', data: historicalData.leads, backgroundColor: '#3498db', yAxisID: 'y' },
-                { label: 'CPL', data: historicalData.cpl, type: 'line', borderColor: '#e67e22', yAxisID: 'y1', tension: 0.3 }
+                {
+                    label: 'Ad Spend',
+                    data: historicalData.spend,
+                    backgroundColor: 'rgba(127, 140, 141, 0.6)',
+                    yAxisID: 'y'
+                },
+                {
+                    label: 'Cost Per Lead (CPL)',
+                    data: historicalData.cpl,
+                    type: 'line',
+                    borderColor: '#e67e22',
+                    backgroundColor: '#e67e22',
+                    yAxisID: 'y1',
+                    tension: 0.3
+                }
             ]
         },
         options: {
             responsive: true, maintainAspectRatio: false,
             scales: {
-                y: { position: 'left', title: { display: true, text: 'Spend (₹) / Leads' } },
+                y: { position: 'left', title: { display: true, text: 'Ad Spend (₹)' } },
                 y1: { position: 'right', title: { display: true, text: 'CPL (₹)' }, grid: { drawOnChartArea: false } }
             }
         }
