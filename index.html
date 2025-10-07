@@ -3,90 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Marketing Dashboard</title>
+    <title>Comprehensive Marketing Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --accent-color: #2980b9;
-            --bg-color: #ecf0f1;
-            --card-bg-color: #ffffff;
-            --text-color: #34495e;
-            --light-text-color: #7f8c8d;
-            --success-color: #27ae60;
-            --warning-color: #e67e22;
+            --primary-color: #2c3e50; --secondary-color: #3498db; --accent-color: #2980b9;
+            --bg-color: #ecf0f1; --card-bg-color: #ffffff; --text-color: #34495e;
+            --light-text-color: #7f8c8d; --success-color: #27ae60; --warning-color: #e67e22;
             --shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
+            font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-color);
+            margin: 0; padding: 20px;
         }
 
-        .dashboard-container {
-            max-width: 1400px;
-            margin: auto;
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-        }
-
-        .card {
-            background-color: var(--card-bg-color);
-            border-radius: 10px;
-            box-shadow: var(--shadow);
-            padding: 20px;
-        }
-        
-        .card-header {
-            font-size: 1.2em;
-            font-weight: 600;
-            margin: 0 0 20px 0;
-            color: var(--primary-color);
-        }
+        .dashboard-container { max-width: 1400px; margin: auto; display: grid; grid-template-columns: 1fr; gap: 20px; }
+        .card { background-color: var(--card-bg-color); border-radius: 10px; box-shadow: var(--shadow); padding: 20px; }
+        .card-header { font-size: 1.2em; font-weight: 600; margin: 0 0 20px 0; color: var(--primary-color); }
 
         /* Layout Grid */
         .main-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             grid-template-rows: auto;
             grid-template-areas:
-                "kpi1 kpi2 kpi3"
-                "historical historical historical"
-                "compare compare forecast"
-                "table chart chart";
+                "kpi1 kpi2 kpi3 kpi4"
+                "overall overall overall overall"
+                "leadgen leadgen leadgen leadgen"
+                "compare compare forecast forecast"
+                "table chart chart chart";
             gap: 20px;
         }
         
-        #kpi1 { grid-area: kpi1; }
-        #kpi2 { grid-area: kpi2; }
-        #kpi3 { grid-area: kpi3; }
-        #historical { grid-area: historical; }
-        #compare { grid-area: compare; }
-        #forecast { grid-area: forecast; }
-        #table { grid-area: table; }
-        #chart { grid-area: chart; }
+        #kpi1 { grid-area: kpi1; } #kpi2 { grid-area: kpi2; } #kpi3 { grid-area: kpi3; } #kpi4 { grid-area: kpi4; }
+        #overall { grid-area: overall; } #leadgen { grid-area: leadgen; } #compare { grid-area: compare; }
+        #forecast { grid-area: forecast; } #table { grid-area: table; } #chart { grid-area: chart; }
 
         /* KPI Cards */
-        .kpi-card { display: flex; flex-direction: column; justify-content: space-between; height: 100%;}
-        .kpi-card h3 {
-            margin: 0 0 5px 0;
-            font-size: 1em;
-            font-weight: 500;
-            color: var(--light-text-color);
-        }
-        .kpi-card .value {
-            font-size: 2.2em;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
+        .kpi-card { display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
+        .kpi-card h3 { margin: 0 0 5px 0; font-size: 1em; font-weight: 500; color: var(--light-text-color); }
+        .kpi-card .value { font-size: 2.2em; font-weight: 700; color: var(--primary-color); }
 
         /* Table */
         table { width: 100%; border-collapse: collapse; }
@@ -94,133 +53,93 @@
         th { font-weight: 600; color: var(--light-text-color); }
         .highlight-row { background-color: #f8f9fa; font-weight: 500; }
 
-        /* Tools */
-        .tool-section { margin-bottom: 15px; }
-        .tool-section:last-child { margin-bottom: 0; }
+        /* Tools & Summaries */
         .tool-section label { display: block; font-weight: 500; margin-bottom: 8px; font-size: 0.9em; }
-        input[type="range"] { width: 100%; }
-        input[type="number"] { width: 100%; padding: 8px; border-radius: 5px; border: 1px solid #bdc3c7; font-size: 1em; box-sizing: border-box; }
+        input[type="range"], input[type="number"] { width: 100%; box-sizing: border-box; }
         .output-box { background-color: var(--bg-color); padding: 10px; border-radius: 5px; }
         .output-box h4 { margin: 0 0 5px 0; font-size: 0.8em; font-weight: 500; color: var(--light-text-color); }
         .output-box p { margin: 0; font-size: 1.2em; font-weight: 600; color: var(--primary-color); }
-        .comparison-summary { border-top: 2px dashed var(--secondary-color); margin-top: 15px; padding-top: 15px; }
         .summary-item { display: flex; justify-content: space-between; font-size: 0.95em; margin-bottom: 5px;}
         .summary-item .diff.positive { color: var(--success-color); }
         .summary-item .diff.negative { color: var(--warning-color); }
+        .placeholder-note { font-size: 0.9em; color: var(--warning-color); background-color: #fff9e6; padding: 10px; border-radius: 5px; margin-top: 10px; border-left: 3px solid var(--warning-color); }
+        .insight-text { font-size: 0.9em; color: var(--accent-color); background-color: #ecf0f1; padding: 10px; border-radius: 5px; margin-top: 10px; border-left: 3px solid var(--accent-color); }
         
         /* Historical Section */
-        .historical-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
-        }
-        .quarterly-summary { display: flex; flex-direction: column; gap: 15px; }
-        .quarterly-summary .output-box .value { font-size: 1.5em; font-weight: 600; color: var(--primary-color); }
-        .quarterly-summary .output-box .label { font-size: 0.9em; font-weight: 500; color: var(--light-text-color); }
-        .insight-text { font-size: 0.9em; color: var(--accent-color); background-color: #ecf0f1; padding: 10px; border-radius: 5px; margin-top: 10px; border-left: 3px solid var(--accent-color); }
-
+        .historical-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+        .quarterly-summary .output-box .value { font-size: 1.5em; }
+        .quarterly-summary .output-box .label { font-size: 0.9em; }
+        
         /* Responsive */
         @media (max-width: 1200px) {
             .main-grid {
                 grid-template-columns: 1fr 1fr;
-                grid-template-areas:
-                    "kpi1 kpi2"
-                    "kpi3 ."
-                    "historical historical"
-                    "compare compare"
-                    "forecast forecast"
-                    "chart chart"
-                    "table table";
+                grid-template-areas: "kpi1 kpi2" "kpi3 kpi4" "overall overall" "leadgen leadgen" "compare compare" "forecast forecast" "chart chart" "table table";
             }
         }
-        @media (max-width: 992px) {
-            .historical-grid { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 992px) { .historical-grid { grid-template-columns: 1fr; } }
         @media (max-width: 768px) {
             body { padding: 10px; }
-            .main-grid {
-                grid-template-columns: 1fr;
-                grid-template-areas: "kpi1" "kpi2" "kpi3" "historical" "compare" "forecast" "chart" "table";
-            }
+            .main-grid { grid-template-columns: 1fr; grid-template-areas: "kpi1" "kpi2" "kpi3" "kpi4" "overall" "leadgen" "compare" "forecast" "chart" "table"; }
         }
-
     </style>
 </head>
 <body>
 
     <div class="dashboard-container">
         <header class="card">
-            <h1 class="card-header" style="font-size: 1.5em; margin-bottom: 0;">Advanced Marketing Dashboard</h1>
+            <h1 class="card-header" style="font-size: 1.5em; margin-bottom: 0;">Comprehensive Marketing Dashboard</h1>
         </header>
 
         <div class="main-grid">
-            <div id="kpi1" class="card kpi-card"><h3>Avg. Cost Per Lead (CPL)</h3><p class="value">₹77</p></div>
-            <div id="kpi2" class="card kpi-card"><h3>Total Leads Analyzed</h3><p class="value">1,354</p></div>
-            <div id="kpi3" class="card kpi-card"><h3>Total Spend Analyzed</h3><p class="value">₹1,04,066</p></div>
+            <div id="kpi1" class="card kpi-card"><h3>Avg. Cost Per Lead</h3><p class="value">₹77</p></div>
+            <div id="kpi2" class="card kpi-card"><h3>Avg. Cost Per Follower</h3><p class="value">₹1.85</p></div>
+            <div id="kpi3" class="card kpi-card"><h3>Total Leads (6 Mo)</h3><p class="value">1,354</p></div>
+            <div id="kpi4" class="card kpi-card"><h3>Total Followers (6 Mo)</h3><p class="value">13,912</p></div>
             
-            <div id="historical" class="card">
-                <h2 class="card-header">6-Month Performance Review (Apr-Sep 2025)</h2>
+            <div id="overall" class="card">
+                <h2 class="card-header">Overall Monthly Performance (Apr-Sep)</h2>
+                <div class="placeholder-note"><strong>Please Note:</strong> The Revenue and ROAS data below are for demonstration purposes. Please provide your actual revenue figures to populate this section accurately.</div>
+                <div style="height:300px; margin-top: 20px;"><canvas id="overallPerformanceChart"></canvas></div>
+                <table style="margin-top:20px;">
+                    <thead><tr><th>Month</th><th>Total Ad Spend*</th><th>Revenue (Placeholder)</th><th>ROAS (Placeholder)</th></tr></thead>
+                    <tbody id="overallTableBody"></tbody>
+                </table>
+                 <p style="font-size:0.8em; color: var(--light-text-color); margin-top:10px;">*Total Ad Spend includes all Meta campaigns and Google Ads. Google Ads data was only available through June.</p>
+            </div>
+
+            <div id="leadgen" class="card">
+                <h2 class="card-header">Lead Generation Deep Dive (Apr-Sep)</h2>
                 <div class="historical-grid">
-                    <div>
-                        <div style="height:300px; margin-bottom: 20px;"><canvas id="historicalChart"></canvas></div>
-                        <table>
-                            <thead><tr><th>Month</th><th>Ad Spend</th><th>Leads</th><th>CPL</th></tr></thead>
-                            <tbody id="historicalTableBody"></tbody>
-                        </table>
-                    </div>
+                    <div><div style="height:300px;"><canvas id="historicalChart"></canvas></div></div>
                     <div class="quarterly-summary">
-                        <div class="output-box">
-                            <div class="label">Quarter 2 (Apr-Jun) Summary</div>
-                            <p class="value">655 Leads</p>
-                            <span>Total Spend: ₹70,426</span><br>
-                            <span>Avg. CPL: <strong>₹108</strong></span>
-                        </div>
-                        <div class="output-box">
-                            <div class="label">Quarter 3 (Jul-Sep) Summary</div>
-                            <p class="value">699 Leads</p>
-                            <span>Total Spend: ₹33,641</span><br>
-                            <span>Avg. CPL: <strong style="color: var(--success-color);">₹48</strong></span>
-                        </div>
-                        <p class="insight-text">
-                            <strong>Key Insight:</strong> Your campaign efficiency improved dramatically in Q3, with the Cost Per Lead (CPL) dropping by over 55% compared to Q2, while generating even more leads for less than half the spend.
-                        </p>
+                        <div class="output-box"><div class="label">Q2 (Apr-Jun) Summary</div><p class="value">655 Leads</p><span>Avg. CPL: <strong>₹108</strong></span></div>
+                        <div class="output-box"><div class="label">Q3 (Jul-Sep) Summary</div><p class="value">699 Leads</p><span>Avg. CPL: <strong style="color: var(--success-color);">₹48</strong></span></div>
+                        <p class="insight-text"><strong>Key Insight:</strong> Your campaign efficiency improved dramatically in Q3, with the Cost Per Lead (CPL) dropping by over 55% while generating more leads for less spend.</p>
                     </div>
                 </div>
             </div>
 
             <div id="compare" class="card">
                 <h2 class="card-header">Scenario Comparison Tool</h2>
-                <div class="comparison-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                     <div class="tool-section">
-                        <label for="sliderA">Scenario A Budget: <span id="sliderAValue" style="font-weight:bold; color: var(--secondary-color)"></span></label>
-                        <input type="range" min="0" max="55000" value="40000" step="1000" id="sliderA">
-                        <div class="output-box" style="margin-top:10px;">
-                            <h4>Leads: <span id="leadsA"></span></h4><p>Influencers: <span id="influencerA"></span></p>
-                        </div>
+                        <label>Scenario A: <span id="sliderAValue"></span></label><input type="range" min="0" max="55000" value="40000" step="1000" id="sliderA">
+                        <div class="output-box" style="margin-top:10px;"><h4>Leads: <span id="leadsA"></span></h4><p>Influencers: <span id="influencerA"></span></p></div>
                     </div>
                     <div class="tool-section">
-                        <label for="sliderB">Scenario B Budget: <span id="sliderBValue" style="font-weight:bold; color: var(--accent-color)"></span></label>
-                        <input type="range" min="0" max="55000" value="25000" step="1000" id="sliderB">
-                         <div class="output-box" style="margin-top:10px;">
-                            <h4>Leads: <span id="leadsB"></span></h4><p>Influencers: <span id="influencerB"></span></p>
-                        </div>
+                        <label>Scenario B: <span id="sliderBValue"></span></label><input type="range" min="0" max="55000" value="25000" step="1000" id="sliderB">
+                        <div class="output-box" style="margin-top:10px;"><h4>Leads: <span id="leadsB"></span></h4><p>Influencers: <span id="influencerB"></span></p></div>
                     </div>
-                </div>
-                <div class="comparison-summary">
-                    <h3 style="margin: 0 0 10px 0; font-size: 1em; font-weight: 600;">Comparison (A vs B)</h3>
-                    <div class="summary-item"><span>Lead Difference:</span> <span id="leadDiff" class="diff"></span></div>
-                    <div class="summary-item"><span>Influencer Budget Difference:</span> <span id="influencerDiff" class="diff"></span></div>
                 </div>
             </div>
 
             <div id="forecast" class="card">
-                <h2 class="card-header">Predictive Analysis & Forecasting</h2>
+                <h2 class="card-header">Predictive Analysis</h2>
                 <div class="tool-section">
-                    <label for="leadTarget">Enter Monthly Lead Target:</label>
-                    <input type="number" id="leadTarget" value="500" placeholder="e.g., 500">
+                    <label for="leadTarget">Enter Monthly Lead Target:</label><input type="number" id="leadTarget" value="500">
                 </div>
-                 <div class="output-box"><h4 >Predicted Monthly Ad Budget</h4><p id="predictedMonthly">₹38,500</p></div>
-                 <div class="output-box" style="margin-top:10px;"><h4>Predicted Annual Ad Budget</h4><p id="predictedAnnual">₹4,62,000</p></div>
+                 <div class="output-box"><h4>Predicted Monthly Budget</h4><p id="predictedMonthly">₹38,500</p></div>
             </div>
 
             <div id="chart" class="card">
@@ -229,11 +148,10 @@
             </div>
             
             <div id="table" class="card">
-                <h2 class="card-header">Budget Allocation Scenarios</h2>
+                <h2 class="card-header">Allocation Scenarios</h2>
                 <table>
                     <thead><tr><th>Scenario</th><th>Ad Budget</th><th>Influencer Budget</th></tr></thead>
                     <tbody>
-                        <tr><td>Baseline</td><td>₹55,000</td><td>₹0</td></tr>
                         <tr><td>Aggressive</td><td>₹45,000</td><td>₹10,000</td></tr>
                         <tr class="highlight-row"><td>Balanced</td><td>₹35,000</td><td>₹20,000</td></tr>
                         <tr><td>Influencer-Heavy</td><td>₹25,000</td><td>₹30,000</td></tr>
@@ -247,84 +165,75 @@
 <script>
     const TOTAL_BUDGET = 55000;
     const CPL = 77;
+    const CPF = 1.85; // Cost Per Follower - calculated from data
 
-    const formatCurrency = (value) => new Intl.NumberFormat('en-IN', {
-        style: 'currency', currency: 'INR', minimumFractionDigits: 0
-    }).format(value);
+    const formatCurrency = (value) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 }).format(value);
 
-    // --- Historical Performance Data & Chart ---
+    // --- Overall Performance Data ---
+    const monthlyLabels = ['April', 'May', 'June', 'July', 'August', 'September'];
+    const totalMetaSpend = [29600, 29848, 29778, 22230, 22612, 12629];
+    const googleSpend = [15000, 15000, 15000, 0, 0, 0]; // Data only up to June
+    const totalCombinedSpend = totalMetaSpend.map((spend, i) => spend + googleSpend[i]);
+    
+    // --- !! PLACEHOLDER REVENUE DATA !! ---
+    // Replace these values with your actual monthly revenue data.
+    const revenueData = [150000, 180000, 250000, 300000, 280000, 350000];
+    
+    const roasData = totalCombinedSpend.map((spend, i) => spend > 0 ? (revenueData[i] / spend) : 0);
+
+    const overallTableBody = document.getElementById('overallTableBody');
+    monthlyLabels.forEach((month, i) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${month}</td>
+            <td>${formatCurrency(totalCombinedSpend[i])}</td>
+            <td>${formatCurrency(revenueData[i])}</td>
+            <td>${roasData[i].toFixed(2)}x</td>
+        `;
+        overallTableBody.appendChild(row);
+    });
+    
+    new Chart(document.getElementById('overallPerformanceChart'), {
+        type: 'bar',
+        data: {
+            labels: monthlyLabels,
+            datasets: [
+                { label: 'Total Ad Spend', data: totalCombinedSpend, backgroundColor: '#7f8c8d', yAxisID: 'y' },
+                { label: 'Revenue', data: revenueData, backgroundColor: '#27ae60', yAxisID: 'y' },
+                { label: 'ROAS', data: roasData, type: 'line', borderColor: '#c0392b', yAxisID: 'y1', tension: 0.3 }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            scales: {
+                y: { type: 'linear', position: 'left', title: { display: true, text: 'Amount (₹)' } },
+                y1: { type: 'linear', position: 'right', title: { display: true, text: 'ROAS (x)' }, grid: { drawOnChartArea: false } }
+            }
+        }
+    });
+
+    // --- Lead Generation Deep Dive Data & Chart ---
     const historicalData = {
         labels: ['April', 'May', 'June', 'July', 'August', 'September'],
         spend: [23778, 23373, 23274, 13137, 15542, 4961],
         leads: [187, 275, 193, 254, 266, 179],
         cpl: [127, 85, 121, 52, 58, 28]
     };
-    
-    // Populate Historical Table
-    const historicalTableBody = document.getElementById('historicalTableBody');
-    historicalData.labels.forEach((month, index) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${month}</td>
-            <td>${formatCurrency(historicalData.spend[index])}</td>
-            <td>${historicalData.leads[index]}</td>
-            <td>${formatCurrency(historicalData.cpl[index])}</td>
-        `;
-        historicalTableBody.appendChild(row);
-    });
-    
-    // Create Historical Chart
-    const historicalCtx = document.getElementById('historicalChart');
-    new Chart(historicalCtx, {
+    new Chart(document.getElementById('historicalChart'), {
         type: 'bar',
         data: {
             labels: historicalData.labels,
             datasets: [
-                {
-                    label: 'Ad Spend',
-                    data: historicalData.spend,
-                    backgroundColor: 'rgba(127, 140, 141, 0.4)',
-                    borderColor: '#7f8c8d',
-                    yAxisID: 'y',
-                    order: 2
-                },
-                {
-                    label: 'Leads Generated',
-                    data: historicalData.leads,
-                    backgroundColor: '#3498db',
-                    borderColor: '#2980b9',
-                    yAxisID: 'y',
-                    order: 2
-                },
-                {
-                    label: 'Cost Per Lead (CPL)',
-                    data: historicalData.cpl,
-                    type: 'line',
-                    borderColor: '#e67e22',
-                    backgroundColor: '#e67e22',
-                    yAxisID: 'y1',
-                    order: 1,
-                    tension: 0.3
-                }
+                { label: 'Ad Spend', data: historicalData.spend, backgroundColor: 'rgba(127, 140, 141, 0.4)', yAxisID: 'y' },
+                { label: 'Leads', data: historicalData.leads, backgroundColor: '#3498db', yAxisID: 'y' },
+                { label: 'CPL', data: historicalData.cpl, type: 'line', borderColor: '#e67e22', yAxisID: 'y1', tension: 0.3 }
             ]
         },
         options: {
             responsive: true, maintainAspectRatio: false,
-            interaction: { mode: 'index', intersect: false },
             scales: {
-                y: {
-                    type: 'linear',
-                    display: true,
-                    position: 'left',
-                    title: { display: true, text: 'Spend (₹) / Leads' }
-                },
-                y1: {
-                    type: 'linear',
-                    display: true,
-                    position: 'right',
-                    title: { display: true, text: 'CPL (₹)' },
-                    grid: { drawOnChartArea: false }
-                }
+                y: { position: 'left', title: { display: true, text: 'Spend (₹) / Leads' } },
+                y1: { position: 'right', title: { display: true, text: 'CPL (₹)' }, grid: { drawOnChartArea: false } }
             }
         }
     });
@@ -332,31 +241,23 @@
     // --- Scenario Comparison Tool ---
     const sliderA = document.getElementById('sliderA');
     const sliderB = document.getElementById('sliderB');
-    
     function updateComparisonTool() {
-        const valA = parseInt(sliderA.value);
-        const valB = parseInt(sliderB.value);
+        const valA = parseInt(sliderA.value), valB = parseInt(sliderB.value);
         document.getElementById('sliderAValue').innerText = formatCurrency(valA);
         document.getElementById('sliderBValue').innerText = formatCurrency(valB);
         
-        const leadsA = Math.floor(valA / CPL);
-        const influencerA = TOTAL_BUDGET - valA;
+        const leadsA = Math.floor(valA / CPL), influencerA = TOTAL_BUDGET - valA;
         document.getElementById('leadsA').innerText = leadsA.toLocaleString('en-IN');
         document.getElementById('influencerA').innerText = formatCurrency(influencerA);
 
-        const leadsB = Math.floor(valB / CPL);
-        const influencerB = TOTAL_BUDGET - valB;
+        const leadsB = Math.floor(valB / CPL), influencerB = TOTAL_BUDGET - valB;
         document.getElementById('leadsB').innerText = leadsB.toLocaleString('en-IN');
         document.getElementById('influencerB').innerText = formatCurrency(influencerB);
 
-        const leadDiff = leadsA - leadsB;
-        const influencerDiff = influencerA - influencerB;
-        const leadDiffEl = document.getElementById('leadDiff');
-        const influencerDiffEl = document.getElementById('influencerDiff');
-
+        const leadDiffEl = document.getElementById('leadDiff'), influencerDiffEl = document.getElementById('influencerDiff');
+        const leadDiff = leadsA - leadsB, influencerDiff = influencerA - influencerB;
         leadDiffEl.innerText = `${leadDiff > 0 ? '+' : ''}${leadDiff.toLocaleString('en-IN')}`;
         leadDiffEl.className = leadDiff >= 0 ? 'diff positive' : 'diff negative';
-        
         influencerDiffEl.innerText = `${influencerDiff > 0 ? '+' : ''}${formatCurrency(influencerDiff)}`;
         influencerDiffEl.className = influencerDiff >= 0 ? 'diff positive' : 'diff negative';
     }
@@ -367,9 +268,7 @@
     const leadTargetInput = document.getElementById('leadTarget');
     function updatePredictionTool() {
         const target = parseInt(leadTargetInput.value) || 0;
-        const monthlyBudget = target * CPL;
-        document.getElementById('predictedMonthly').innerText = formatCurrency(monthlyBudget);
-        document.getElementById('predictedAnnual').innerText = formatCurrency(monthlyBudget * 12);
+        document.getElementById('predictedMonthly').innerText = formatCurrency(target * CPL);
     }
     leadTargetInput.addEventListener('input', updatePredictionTool);
 
@@ -378,23 +277,20 @@
         type: 'bar',
         data: {
             labels: ['Aggressive', 'Balanced', 'Influencer-Heavy'],
-            datasets: [{
-                label: 'Ad Spend', data: [45000, 35000, 25000], backgroundColor: '#3498db',
-            }, {
-                label: 'Influencer Spend', data: [10000, 20000, 30000], backgroundColor: '#95a5a6',
-            }]
+            datasets: [
+                { label: 'Ad Spend', data: [45000, 35000, 25000], backgroundColor: '#3498db' },
+                { label: 'Influencer Spend', data: [10000, 20000, 30000], backgroundColor: '#95a5a6' }
+            ]
         },
         options: {
             responsive: true, maintainAspectRatio: false,
-            plugins: { legend: { position: 'top' } },
             scales: { x: { stacked: true }, y: { stacked: true, ticks: { callback: (value) => `₹${value/1000}k` } } }
         }
     });
     
-    // --- Initial function calls on page load ---
+    // --- Initial function calls ---
     updateComparisonTool();
     updatePredictionTool();
-
 </script>
 </body>
 </html>
