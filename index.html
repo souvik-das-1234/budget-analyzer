@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Advanced Marketing Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
@@ -57,6 +59,7 @@
             grid-template-rows: auto;
             grid-template-areas:
                 "kpi1 kpi2 kpi3"
+                "historical historical historical"
                 "compare compare forecast"
                 "table chart chart";
             gap: 20px;
@@ -65,6 +68,7 @@
         #kpi1 { grid-area: kpi1; }
         #kpi2 { grid-area: kpi2; }
         #kpi3 { grid-area: kpi3; }
+        #historical { grid-area: historical; }
         #compare { grid-area: compare; }
         #forecast { grid-area: forecast; }
         #table { grid-area: table; }
@@ -90,13 +94,12 @@
         th { font-weight: 600; color: var(--light-text-color); }
         .highlight-row { background-color: #f8f9fa; font-weight: 500; }
 
-        /* Comparison & Forecast Tools */
+        /* Tools */
         .tool-section { margin-bottom: 15px; }
         .tool-section:last-child { margin-bottom: 0; }
         .tool-section label { display: block; font-weight: 500; margin-bottom: 8px; font-size: 0.9em; }
         input[type="range"] { width: 100%; }
         input[type="number"] { width: 100%; padding: 8px; border-radius: 5px; border: 1px solid #bdc3c7; font-size: 1em; box-sizing: border-box; }
-        .comparison-outputs { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px;}
         .output-box { background-color: var(--bg-color); padding: 10px; border-radius: 5px; }
         .output-box h4 { margin: 0 0 5px 0; font-size: 0.8em; font-weight: 500; color: var(--light-text-color); }
         .output-box p { margin: 0; font-size: 1.2em; font-weight: 600; color: var(--primary-color); }
@@ -105,6 +108,17 @@
         .summary-item .diff.positive { color: var(--success-color); }
         .summary-item .diff.negative { color: var(--warning-color); }
         
+        /* Historical Section */
+        .historical-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+        .quarterly-summary { display: flex; flex-direction: column; gap: 15px; }
+        .quarterly-summary .output-box .value { font-size: 1.5em; font-weight: 600; color: var(--primary-color); }
+        .quarterly-summary .output-box .label { font-size: 0.9em; font-weight: 500; color: var(--light-text-color); }
+        .insight-text { font-size: 0.9em; color: var(--accent-color); background-color: #ecf0f1; padding: 10px; border-radius: 5px; margin-top: 10px; border-left: 3px solid var(--accent-color); }
+
         /* Responsive */
         @media (max-width: 1200px) {
             .main-grid {
@@ -112,17 +126,21 @@
                 grid-template-areas:
                     "kpi1 kpi2"
                     "kpi3 ."
+                    "historical historical"
                     "compare compare"
                     "forecast forecast"
                     "chart chart"
                     "table table";
             }
         }
+        @media (max-width: 992px) {
+            .historical-grid { grid-template-columns: 1fr; }
+        }
         @media (max-width: 768px) {
             body { padding: 10px; }
             .main-grid {
                 grid-template-columns: 1fr;
-                grid-template-areas: "kpi1" "kpi2" "kpi3" "compare" "forecast" "chart" "table";
+                grid-template-areas: "kpi1" "kpi2" "kpi3" "historical" "compare" "forecast" "chart" "table";
             }
         }
 
@@ -136,19 +154,40 @@
         </header>
 
         <div class="main-grid">
-            <div id="kpi1" class="card kpi-card">
-                <h3>Avg. Cost Per Lead (CPL)</h3>
-                <p class="value">₹77</p>
-            </div>
-            <div id="kpi2" class="card kpi-card">
-                <h3>Total Leads Analyzed</h3>
-                <p class="value">1,354</p>
-            </div>
-            <div id="kpi3" class="card kpi-card">
-                <h3>Total Spend Analyzed</h3>
-                <p class="value">₹1,04,066</p>
-            </div>
+            <div id="kpi1" class="card kpi-card"><h3>Avg. Cost Per Lead (CPL)</h3><p class="value">₹77</p></div>
+            <div id="kpi2" class="card kpi-card"><h3>Total Leads Analyzed</h3><p class="value">1,354</p></div>
+            <div id="kpi3" class="card kpi-card"><h3>Total Spend Analyzed</h3><p class="value">₹1,04,066</p></div>
             
+            <div id="historical" class="card">
+                <h2 class="card-header">6-Month Performance Review (Apr-Sep 2025)</h2>
+                <div class="historical-grid">
+                    <div>
+                        <div style="height:300px; margin-bottom: 20px;"><canvas id="historicalChart"></canvas></div>
+                        <table>
+                            <thead><tr><th>Month</th><th>Ad Spend</th><th>Leads</th><th>CPL</th></tr></thead>
+                            <tbody id="historicalTableBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="quarterly-summary">
+                        <div class="output-box">
+                            <div class="label">Quarter 2 (Apr-Jun) Summary</div>
+                            <p class="value">655 Leads</p>
+                            <span>Total Spend: ₹70,426</span><br>
+                            <span>Avg. CPL: <strong>₹108</strong></span>
+                        </div>
+                        <div class="output-box">
+                            <div class="label">Quarter 3 (Jul-Sep) Summary</div>
+                            <p class="value">699 Leads</p>
+                            <span>Total Spend: ₹33,641</span><br>
+                            <span>Avg. CPL: <strong style="color: var(--success-color);">₹48</strong></span>
+                        </div>
+                        <p class="insight-text">
+                            <strong>Key Insight:</strong> Your campaign efficiency improved dramatically in Q3, with the Cost Per Lead (CPL) dropping by over 55% compared to Q2, while generating even more leads for less than half the spend.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             <div id="compare" class="card">
                 <h2 class="card-header">Scenario Comparison Tool</h2>
                 <div class="comparison-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
@@ -156,16 +195,14 @@
                         <label for="sliderA">Scenario A Budget: <span id="sliderAValue" style="font-weight:bold; color: var(--secondary-color)"></span></label>
                         <input type="range" min="0" max="55000" value="40000" step="1000" id="sliderA">
                         <div class="output-box" style="margin-top:10px;">
-                            <h4>Leads: <span id="leadsA"></span></h4>
-                            <p>Influencers: <span id="influencerA"></span></p>
+                            <h4>Leads: <span id="leadsA"></span></h4><p>Influencers: <span id="influencerA"></span></p>
                         </div>
                     </div>
                     <div class="tool-section">
                         <label for="sliderB">Scenario B Budget: <span id="sliderBValue" style="font-weight:bold; color: var(--accent-color)"></span></label>
                         <input type="range" min="0" max="55000" value="25000" step="1000" id="sliderB">
                          <div class="output-box" style="margin-top:10px;">
-                            <h4>Leads: <span id="leadsB"></span></h4>
-                            <p>Influencers: <span id="influencerB"></span></p>
+                            <h4>Leads: <span id="leadsB"></span></h4><p>Influencers: <span id="influencerB"></span></p>
                         </div>
                     </div>
                 </div>
@@ -182,14 +219,8 @@
                     <label for="leadTarget">Enter Monthly Lead Target:</label>
                     <input type="number" id="leadTarget" value="500" placeholder="e.g., 500">
                 </div>
-                 <div class="output-box">
-                    <h4>Predicted Monthly Ad Budget</h4>
-                    <p id="predictedMonthly">₹38,500</p>
-                </div>
-                 <div class="output-box" style="margin-top:10px;">
-                    <h4>Predicted Annual Ad Budget</h4>
-                    <p id="predictedAnnual">₹4,62,000</p>
-                </div>
+                 <div class="output-box"><h4 >Predicted Monthly Ad Budget</h4><p id="predictedMonthly">₹38,500</p></div>
+                 <div class="output-box" style="margin-top:10px;"><h4>Predicted Annual Ad Budget</h4><p id="predictedAnnual">₹4,62,000</p></div>
             </div>
 
             <div id="chart" class="card">
@@ -213,7 +244,6 @@
         </div>
     </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const TOTAL_BUDGET = 55000;
     const CPL = 77;
@@ -222,6 +252,83 @@
         style: 'currency', currency: 'INR', minimumFractionDigits: 0
     }).format(value);
 
+    // --- Historical Performance Data & Chart ---
+    const historicalData = {
+        labels: ['April', 'May', 'June', 'July', 'August', 'September'],
+        spend: [23778, 23373, 23274, 13137, 15542, 4961],
+        leads: [187, 275, 193, 254, 266, 179],
+        cpl: [127, 85, 121, 52, 58, 28]
+    };
+    
+    // Populate Historical Table
+    const historicalTableBody = document.getElementById('historicalTableBody');
+    historicalData.labels.forEach((month, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${month}</td>
+            <td>${formatCurrency(historicalData.spend[index])}</td>
+            <td>${historicalData.leads[index]}</td>
+            <td>${formatCurrency(historicalData.cpl[index])}</td>
+        `;
+        historicalTableBody.appendChild(row);
+    });
+    
+    // Create Historical Chart
+    const historicalCtx = document.getElementById('historicalChart');
+    new Chart(historicalCtx, {
+        type: 'bar',
+        data: {
+            labels: historicalData.labels,
+            datasets: [
+                {
+                    label: 'Ad Spend',
+                    data: historicalData.spend,
+                    backgroundColor: 'rgba(127, 140, 141, 0.4)',
+                    borderColor: '#7f8c8d',
+                    yAxisID: 'y',
+                    order: 2
+                },
+                {
+                    label: 'Leads Generated',
+                    data: historicalData.leads,
+                    backgroundColor: '#3498db',
+                    borderColor: '#2980b9',
+                    yAxisID: 'y',
+                    order: 2
+                },
+                {
+                    label: 'Cost Per Lead (CPL)',
+                    data: historicalData.cpl,
+                    type: 'line',
+                    borderColor: '#e67e22',
+                    backgroundColor: '#e67e22',
+                    yAxisID: 'y1',
+                    order: 1,
+                    tension: 0.3
+                }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            scales: {
+                y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    title: { display: true, text: 'Spend (₹) / Leads' }
+                },
+                y1: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    title: { display: true, text: 'CPL (₹)' },
+                    grid: { drawOnChartArea: false }
+                }
+            }
+        }
+    });
+
     // --- Scenario Comparison Tool ---
     const sliderA = document.getElementById('sliderA');
     const sliderB = document.getElementById('sliderB');
@@ -229,24 +336,19 @@
     function updateComparisonTool() {
         const valA = parseInt(sliderA.value);
         const valB = parseInt(sliderB.value);
-
-        // Update labels
         document.getElementById('sliderAValue').innerText = formatCurrency(valA);
         document.getElementById('sliderBValue').innerText = formatCurrency(valB);
         
-        // Calculate for A
         const leadsA = Math.floor(valA / CPL);
         const influencerA = TOTAL_BUDGET - valA;
         document.getElementById('leadsA').innerText = leadsA.toLocaleString('en-IN');
         document.getElementById('influencerA').innerText = formatCurrency(influencerA);
 
-        // Calculate for B
         const leadsB = Math.floor(valB / CPL);
         const influencerB = TOTAL_BUDGET - valB;
         document.getElementById('leadsB').innerText = leadsB.toLocaleString('en-IN');
         document.getElementById('influencerB').innerText = formatCurrency(influencerB);
 
-        // Calculate Differences
         const leadDiff = leadsA - leadsB;
         const influencerDiff = influencerA - influencerB;
         const leadDiffEl = document.getElementById('leadDiff');
@@ -258,27 +360,21 @@
         influencerDiffEl.innerText = `${influencerDiff > 0 ? '+' : ''}${formatCurrency(influencerDiff)}`;
         influencerDiffEl.className = influencerDiff >= 0 ? 'diff positive' : 'diff negative';
     }
-
     sliderA.addEventListener('input', updateComparisonTool);
     sliderB.addEventListener('input', updateComparisonTool);
 
     // --- Predictive Analysis Tool ---
     const leadTargetInput = document.getElementById('leadTarget');
-    
     function updatePredictionTool() {
         const target = parseInt(leadTargetInput.value) || 0;
         const monthlyBudget = target * CPL;
-        const annualBudget = monthlyBudget * 12;
-
         document.getElementById('predictedMonthly').innerText = formatCurrency(monthlyBudget);
-        document.getElementById('predictedAnnual').innerText = formatCurrency(annualBudget);
+        document.getElementById('predictedAnnual').innerText = formatCurrency(monthlyBudget * 12);
     }
-    
     leadTargetInput.addEventListener('input', updatePredictionTool);
 
-    // --- Chart.js ---
-    const ctx = document.getElementById('budgetChart');
-    new Chart(ctx, {
+    // --- Budget Split Chart ---
+    new Chart(document.getElementById('budgetChart'), {
         type: 'bar',
         data: {
             labels: ['Aggressive', 'Balanced', 'Influencer-Heavy'],
@@ -291,10 +387,7 @@
         options: {
             responsive: true, maintainAspectRatio: false,
             plugins: { legend: { position: 'top' } },
-            scales: {
-                x: { stacked: true },
-                y: { stacked: true, ticks: { callback: (value) => `₹${value/1000}k` } }
-            }
+            scales: { x: { stacked: true }, y: { stacked: true, ticks: { callback: (value) => `₹${value/1000}k` } } }
         }
     });
     
