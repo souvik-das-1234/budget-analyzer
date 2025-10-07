@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comprehensive Marketing Dashboard</title>
+    <title>Updated Comprehensive Marketing Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -92,23 +92,22 @@
         </header>
 
         <div class="main-grid">
-            <div id="kpi1" class="card kpi-card"><h3>Avg. Cost Per Lead</h3><p class="value">₹77</p></div>
-            <div id="kpi3" class="card kpi-card"><h3>Total Leads (6 Mo)</h3><p class="value">1,354</p></div>
-            <div id="kpi_roas" class="card kpi-card"><h3>Overall ROAS (Placeholder)</h3><p class="value" id="overallRoasKpi">7.88x</p></div>
+            <div id="kpi1" class="card kpi-card"><h3>Avg. Cost Per Lead</h3><p class="value" id="kpiCPL">₹82</p></div>
+            <div id="kpi3" class="card kpi-card"><h3>Total Leads (All Time)</h3><p class="value" id="kpiTotalLeads">1,680</p></div>
+            <div id="kpi_roas" class="card kpi-card"><h3>Overall ROAS (Placeholder)</h3><p class="value" id="overallRoasKpi">8.17x</p></div>
             
             <div id="overall" class="card">
-                <h2 class="card-header">Overall Monthly Performance (Apr-Sep)</h2>
+                <h2 class="card-header">Overall Monthly Performance</h2>
                 <div class="placeholder-note"><strong>Please Note:</strong> The Revenue and ROAS data below are for demonstration purposes. Please provide your actual revenue figures to populate this section accurately.</div>
                 <div style="height:300px; margin-top: 20px;"><canvas id="overallPerformanceChart"></canvas></div>
                 <table style="margin-top:20px;">
-                    <thead><tr><th>Month</th><th>Total Ad Spend*</th><th>Revenue (Placeholder)</th><th>ROAS (Placeholder)</th></tr></thead>
+                    <thead><tr><th>Month</th><th>Total Ad Spend</th><th>Revenue (Placeholder)</th><th>ROAS (Placeholder)</th></tr></thead>
                     <tbody id="overallTableBody"></tbody>
                 </table>
-                 <p style="font-size:0.8em; color: var(--light-text-color); margin-top:10px;">*Total Ad Spend includes all Meta campaigns and Google Ads. Google Ads data was only available through June.</p>
             </div>
 
             <div id="leadgen" class="card">
-                <h2 class="card-header">Lead Generation Deep Dive (Apr-Sep)</h2>
+                <h2 class="card-header">Lead Generation Deep Dive</h2>
                 <div class="historical-grid">
                     <div><div style="height:300px;"><canvas id="historicalChart"></canvas></div></div>
                     <div class="quarterly-summary">
@@ -138,7 +137,7 @@
                 <div class="tool-section">
                     <label for="leadTarget">Enter Monthly Lead Target:</label><input type="number" id="leadTarget" value="500">
                 </div>
-                 <div class="output-box"><h4>Predicted Monthly Budget</h4><p id="predictedMonthly">₹38,500</p></div>
+                 <div class="output-box"><h4>Predicted Monthly Budget</h4><p id="predictedMonthly">₹41,000</p></div>
             </div>
 
             <div id="chart" class="card">
@@ -163,19 +162,19 @@
 
 <script>
     const TOTAL_BUDGET = 55000;
-    const CPL = 77;
+    // UPDATED CPL from new data
+    const CPL = 82;
 
     const formatCurrency = (value) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 }).format(value);
 
-    // --- Overall Performance Data ---
-    const monthlyLabels = ['April', 'May', 'June', 'July', 'August', 'September'];
-    const totalMetaSpend = [29600, 29848, 29778, 22230, 22612, 12629];
-    const googleSpend = [15000, 15000, 15000, 0, 0, 0]; // Data only up to June
+    // --- Overall Performance Data (UPDATED) ---
+    const monthlyLabels = ['April', 'May', 'June', 'July', 'August', 'September', 'Oct (MTD)'];
+    const totalMetaSpend = [29600, 29848, 29778, 22230, 22612, 12629, 992];
+    const googleSpend = [15000, 15000, 15000, 15000, 15000, 15000, 0]; 
     const totalCombinedSpend = totalMetaSpend.map((spend, i) => spend + googleSpend[i]);
     
-    // --- !! PLACEHOLDER REVENUE DATA !! ---
-    // Replace these values with your actual monthly revenue data.
-    const revenueData = [150000, 180000, 250000, 300000, 280000, 350000];
+    // --- !! PLACEHOLDER REVENUE DATA (EXTENDED) !! ---
+    const revenueData = [150000, 180000, 250000, 300000, 280000, 350000, 50000];
     
     const roasData = totalCombinedSpend.map((spend, i) => spend > 0 ? (revenueData[i] / spend) : 0);
 
@@ -196,7 +195,7 @@
     const totalSpendOverall = totalCombinedSpend.reduce((a, b) => a + b, 0);
     const overallRoas = totalSpendOverall > 0 ? (totalRevenue / totalSpendOverall) : 0;
     document.getElementById('overallRoasKpi').innerText = `${overallRoas.toFixed(2)}x`;
-
+    
     new Chart(document.getElementById('overallPerformanceChart'), {
         type: 'bar',
         data: {
@@ -216,13 +215,17 @@
         }
     });
 
-    // --- Lead Generation Deep Dive Data & Chart ---
+    // --- Lead Generation Deep Dive Data & Chart (UPDATED) ---
     const historicalData = {
-        labels: ['April', 'May', 'June', 'July', 'August', 'September'],
-        spend: [23778, 23373, 23274, 13137, 15542, 4961],
-        leads: [187, 275, 193, 254, 266, 179],
-        cpl: [127, 85, 121, 52, 58, 28]
+        labels: ['April', 'May', 'June', 'July', 'August', 'September', 'Oct (MTD)'],
+        spend: [23778, 23373, 23274, 13137, 15542, 4961, 992],
+        leads: [187, 275, 193, 254, 266, 179, 326],
+        cpl: [127, 85, 121, 52, 58, 28, 3] // CPL for October seems extremely low, reflecting data.
     };
+    const totalLeadsAllTime = historicalData.leads.reduce((a,b) => a+b, 0);
+    document.getElementById('kpiCPL').innerText = formatCurrency(CPL);
+    document.getElementById('kpiTotalLeads').innerText = totalLeadsAllTime.toLocaleString('en-IN');
+    
     new Chart(document.getElementById('historicalChart'), {
         type: 'bar',
         data: {
@@ -257,17 +260,6 @@
         const leadsB = Math.floor(valB / CPL), influencerB = TOTAL_BUDGET - valB;
         document.getElementById('leadsB').innerText = leadsB.toLocaleString('en-IN');
         document.getElementById('influencerB').innerText = formatCurrency(influencerB);
-
-        const leadDiffEl = document.getElementById('leadDiff'), influencerDiffEl = document.getElementById('influencerDiff');
-        const leadDiff = leadsA - leadsB, influencerDiff = influencerA - influencerB;
-        if(leadDiffEl) {
-            leadDiffEl.innerText = `${leadDiff > 0 ? '+' : ''}${leadDiff.toLocaleString('en-IN')}`;
-            leadDiffEl.className = leadDiff >= 0 ? 'diff positive' : 'diff negative';
-        }
-        if(influencerDiffEl){
-            influencerDiffEl.innerText = `${influencerDiff > 0 ? '+' : ''}${formatCurrency(influencerDiff)}`;
-            influencerDiffEl.className = influencerDiff >= 0 ? 'diff positive' : 'diff negative';
-        }
     }
     sliderA.addEventListener('input', updateComparisonTool);
     sliderB.addEventListener('input', updateComparisonTool);
