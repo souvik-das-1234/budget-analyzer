@@ -120,7 +120,7 @@
                          </div>
                     </div>
 
-                    <div class="neumorphic-card p-6 mb-6">
+                     <div class="neumorphic-card p-6 mb-6">
                         <div class="flex flex-col sm:flex-row justify-between items-center mb-2">
                             <h3 class="text-lg font-semibold text-gray-700 mb-2 sm:mb-0">Predictive Analytics: Clicks Forecast</h3>
                             <div class="flex items-center space-x-2">
@@ -131,6 +131,7 @@
                         </div>
                         <div class="h-80"><canvas id="forecastChart"></canvas></div>
                     </div>
+
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div class="neumorphic-card p-6"><h3 class="text-lg font-semibold mb-2 text-gray-700">Top Queries</h3><div class="table-container overflow-auto h-72"><table class="w-full text-sm text-left"><thead class="text-xs text-gray-500 uppercase bg-slate-200 sticky top-0"><tr><th scope="col" class="px-4 py-3">Query</th><th scope="col" class="px-4 py-3">Clicks</th><th scope="col" class="px-4 py-3">Impressions</th></tr></thead><tbody id="queries-table" class="text-gray-600"></tbody></table></div></div>
@@ -390,20 +391,12 @@
                      if (adSpendSlider) {
                         const updateForecastMetrics = () => {
                             const spend = parseFloat(adSpendSlider.value);
-                            const spendValueEl = document.getElementById('ad-spend-value');
-                            if(spendValueEl) spendValueEl.textContent = formatIndianCurrency(spend);
-                            
+                            document.getElementById('ad-spend-value').textContent = formatIndianCurrency(spend);
                             const predictedRevenue = spend * overallRoas;
                             const predictedLeads = cpl > 0 ? spend / cpl : 0;
-                            
-                            const predRevEl = document.getElementById('predicted-revenue');
-                            if(predRevEl) predRevEl.textContent = formatLargeNumber(predictedRevenue);
-
-                            const predRoasEl = document.getElementById('predicted-roas');
-                            if(predRoasEl) predRoasEl.textContent = overallRoas.toFixed(2) + 'x';
-
-                            const predLeadsEl = document.getElementById('predicted-leads');
-                            if(predLeadsEl) predLeadsEl.textContent = Math.round(predictedLeads).toLocaleString('en-IN');
+                            document.getElementById('predicted-revenue').textContent = formatLargeNumber(predictedRevenue);
+                            document.getElementById('predicted-roas').textContent = overallRoas.toFixed(2) + 'x';
+                            document.getElementById('predicted-leads').textContent = Math.round(predictedLeads).toLocaleString('en-IN');
                         };
                         adSpendSlider.oninput = updateForecastMetrics; 
                         updateForecastMetrics();
