@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Interactive Marketing Dashboard</title>
+    <title>Neumorphic Marketing Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-geo@4.3.0/build/index.umd.min.js"></script>
@@ -14,43 +14,35 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f0f2f5;
-            color: #334155;
+            background-color: #e0e5ec;
+            color: #555;
         }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-radius: 1rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        .neumorphic-card {
+            border-radius: 20px;
+            background: #e0e5ec;
+            box-shadow: 9px 9px 16px #a3b1c6, -9px -9px 16px #ffffff;
+            transition: all 0.3s ease-in-out;
+        }
+        .neumorphic-card-inset {
+            border-radius: 20px;
+            background: #e0e5ec;
+            box-shadow: inset 5px 5px 10px #a3b1c6, inset -5px -5px 10px #ffffff;
         }
         .header {
-             background: rgba(255, 255, 255, 0.7);
-             backdrop-filter: blur(10px);
-             -webkit-backdrop-filter: blur(10px);
-             border-bottom: 1px solid rgba(200, 200, 200, 0.3);
+            background: #e0e5ec;
+            box-shadow: 0px 5px 15px #a3b1c6;
         }
         .nav-link {
-            transition: all 0.3s ease;
-            position: relative;
-            padding: 8px 16px;
-            border-radius: 9999px;
+            transition: all 0.2s ease;
+            color: #586a88;
             font-weight: 500;
-             color: #475569;
         }
-        .nav-link.active {
-            color: #ffffff;
-            background-color: #4f46e5;
-            box-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.3);
+        .nav-link.active, .nav-link:hover {
+            color: #3b82f6;
         }
-        .nav-link:hover:not(.active) {
-            background-color: #eef2ff;
-        }
-
         .table-container::-webkit-scrollbar { width: 6px; }
-        .table-container::-webkit-scrollbar-track { background: #e0e7ff; }
-        .table-container::-webkit-scrollbar-thumb { background-color: #a5b4fc; border-radius: 10px; }
+        .table-container::-webkit-scrollbar-track { background: #e0e5ec; }
+        .table-container::-webkit-scrollbar-thumb { background-color: #a3b1c6; border-radius: 10px; }
         #notification-banner {
             transition: opacity 0.5s, transform 0.5s;
         }
@@ -58,11 +50,11 @@
             -webkit-appearance: none; background: transparent; cursor: pointer; width: 100%;
         }
         input[type=range]:focus { outline: none; }
-        input[type=range]::-webkit-slider-runnable-track { height: 8px; background: #e0e7ff; border-radius: 4px; }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; margin-top: -4px; height: 16px; width: 16px; background: #4f46e5; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 5px rgba(79,70,229,0.5); }
-        .flatpickr-calendar { background-color: #ffffff; color: #334155; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);}
-        .flatpickr-day.selected { background-color: #4f46e5; border-color: #4f46e5; }
-        .flatpickr-day:hover { background-color: #e0e7ff; }
+        input[type=range]::-webkit-slider-runnable-track { height: 8px; background: #e0e5ec; border-radius: 4px; box-shadow: inset 2px 2px 5px #a3b1c6, inset -2px -2px 5px #ffffff; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; margin-top: -4px; height: 16px; width: 16px; background: #3b82f6; border-radius: 50%; box-shadow: 3px 3px 6px #a3b1c6, -3px -3px 6px #ffffff; }
+        .flatpickr-calendar { background-color: #e0e5ec; box-shadow: 9px 9px 16px #a3b1c6, -9px -9px 16px #ffffff; border-radius: 10px; }
+        .flatpickr-day.selected { background-color: #3b82f6; border-color: #3b82f6; box-shadow: inset 2px 2px 5px #2a61c3, inset -2px -2px 5px #4ca3ff; }
+        .flatpickr-day:hover { background-color: #d1d9e6; }
         .main-content.loading { filter: blur(4px); transition: filter 0.3s; pointer-events: none; }
         .growth-indicator.positive { color: #10b981; }
         .growth-indicator.negative { color: #ef4444; }
@@ -75,18 +67,18 @@
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between h-20">
                     <div class="flex items-center space-x-4">
-                        <div class="w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-2xl flex-shrink-0 shadow-lg">SP</div>
-                        <h1 class="text-2xl font-bold text-gray-800">SylvanPly</h1>
+                        <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-2xl flex-shrink-0 shadow-lg">SP</div>
+                        <h1 class="text-2xl font-bold text-gray-700">SylvanPly</h1>
                     </div>
-                    <nav id="sidebar-nav" class="hidden md:flex items-center space-x-2 bg-gray-200/50 p-2 rounded-full">
-                        <a href="#" data-target="dashboard" class="nav-link text-sm active">Dashboard</a>
-                        <a href="#" data-target="analytics" class="nav-link text-sm">Analytics</a>
-                        <a href="#" data-target="reports" class="nav-link text-sm">Quarterly Report</a>
-                        <a href="#" data-target="settings" class="nav-link text-sm">Settings</a>
+                    <nav id="sidebar-nav" class="hidden md:flex items-center space-x-10">
+                        <a href="#" data-target="dashboard" class="nav-link text-lg active">Dashboard</a>
+                        <a href="#" data-target="analytics" class="nav-link text-lg">Analytics</a>
+                        <a href="#" data-target="reports" class="nav-link text-lg">Quarterly Report</a>
+                        <a href="#" data-target="settings" class="nav-link text-lg">Settings</a>
                     </nav>
                     <div class="flex items-center">
                         <div class="relative">
-                            <input type="text" id="date-range" class="bg-white border border-gray-300 text-gray-700 rounded-full pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 w-64 text-center placeholder-gray-500">
+                            <input type="text" id="date-range" class="neumorphic-card-inset border-none text-gray-700 rounded-full pl-10 pr-4 py-2 text-sm focus:outline-none w-64 text-center placeholder-gray-500" placeholder="Select Date Range">
                             <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                         </div>
                     </div>
@@ -102,19 +94,19 @@
                 <!-- Dashboard Content -->
                 <div id="dashboard" class="page-content">
                     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 mb-6">
-                         <div class="glass-card p-4 flex items-center"><div class="p-3 rounded-full bg-indigo-100 text-indigo-600 mr-4"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v.01"></path></svg></div><div><h3 class="text-sm font-medium text-gray-500">Total Revenue</h3><p id="total-revenue" class="text-2xl font-bold text-gray-800">--</p></div></div>
-                        <div class="glass-card p-4 flex items-center"><div class="p-3 rounded-full bg-red-100 text-red-600 mr-4"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg></div><div><h3 class="text-sm font-medium text-gray-500">Ad Spend</h3><p id="ad-spend" class="text-2xl font-bold text-gray-800">--</p></div></div>
-                        <div class="glass-card p-4 flex items-center"><div class="p-3 rounded-full bg-green-100 text-green-600 mr-4"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg></div><div><h3 class="text-sm font-medium text-gray-500">ROAS</h3><p id="roas" class="text-2xl font-bold text-gray-800">--</p></div></div>
-                        <div class="glass-card p-4 flex items-center"><div class="p-3 rounded-full bg-blue-100 text-blue-600 mr-4"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg></div><div><h3 class="text-sm font-medium text-gray-500">Total Leads</h3><p id="total-leads" class="text-2xl font-bold text-gray-800">--</p></div></div>
-                        <div class="glass-card p-4 flex items-center"><div class="p-3 rounded-full bg-yellow-100 text-yellow-600 mr-4"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 11V9a2 2 0 00-2-2m2 4v4a2 2 0 104 0v-1m-4-3H9m2 0h4m6 1a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div><div><h3 class="text-sm font-medium text-gray-500">Cost Per Lead</h3><p id="cpl" class="text-2xl font-bold text-gray-800">--</p></div></div>
+                         <div class="neumorphic-card p-4 text-center"><h3 class="text-sm font-medium text-gray-500">Total Revenue</h3><p id="total-revenue" class="text-3xl font-bold text-indigo-600 mt-2">--</p></div>
+                        <div class="neumorphic-card p-4 text-center"><h3 class="text-sm font-medium text-gray-500">Ad Spend</h3><p id="ad-spend" class="text-3xl font-bold text-red-500 mt-2">--</p></div>
+                        <div class="neumorphic-card p-4 text-center"><h3 class="text-sm font-medium text-gray-500">ROAS</h3><p id="roas" class="text-3xl font-bold text-green-600 mt-2">--</p></div>
+                        <div class="neumorphic-card p-4 text-center"><h3 class="text-sm font-medium text-gray-500">Total Leads</h3><p id="total-leads" class="text-3xl font-bold text-blue-500 mt-2">--</p></div>
+                        <div class="neumorphic-card p-4 text-center"><h3 class="text-sm font-medium text-gray-500">Cost Per Lead</h3><p id="cpl" class="text-3xl font-bold text-yellow-600 mt-2">--</p></div>
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-6">
-                        <div class="glass-card lg:col-span-3 p-6"><h3 class="text-lg font-semibold mb-4 text-gray-700">Performance Over Time</h3><div class="h-80"><canvas id="performanceChart"></canvas></div></div>
-                        <div class="glass-card lg:col-span-2 p-6 flex flex-col"><h3 class="text-lg font-semibold mb-4 text-gray-700">Revenue vs. Ad Spend</h3><div class="h-80"><canvas id="revenueChart"></canvas></div></div>
+                        <div class="neumorphic-card lg:col-span-3 p-6"><h3 class="text-lg font-semibold mb-4 text-gray-700">Performance Over Time</h3><div class="h-80"><canvas id="performanceChart"></canvas></div></div>
+                        <div class="neumorphic-card lg:col-span-2 p-6 flex flex-col"><h3 class="text-lg font-semibold mb-4 text-gray-700">Revenue vs. Ad Spend</h3><div class="h-80"><canvas id="revenueChart"></canvas></div></div>
                     </div>
                     
-                    <div class="glass-card p-6 mb-6">
+                    <div class="neumorphic-card p-6 mb-6">
                          <h3 class="text-lg font-semibold mb-4 text-gray-700">Interactive ROAS & Lead Forecaster</h3>
                          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                             <div>
@@ -129,18 +121,29 @@
                             <div><div class="h-48"><canvas id="roasChart"></canvas></div></div>
                          </div>
                     </div>
+                    <div class="neumorphic-card p-6 mb-6">
+                        <div class="flex flex-col sm:flex-row justify-between items-center mb-2">
+                            <h3 class="text-lg font-semibold text-gray-700 mb-2 sm:mb-0">Predictive Analytics: Clicks Forecast</h3>
+                            <div class="flex items-center space-x-2">
+                                <label for="forecast-months" class="text-sm text-gray-500">Months to predict:</label>
+                                <input type="number" id="forecast-months" value="3" min="1" max="12" class="w-16 neumorphic-card-inset border-none p-1 text-center text-sm">
+                                <button id="predict-btn" class="neumorphic-card font-semibold py-1.5 px-4 rounded-lg text-sm text-blue-600 hover:shadow-inner">Predict</button>
+                            </div>
+                        </div>
+                        <div class="h-80"><canvas id="forecastChart"></canvas></div>
+                    </div>
                 </div>
 
                 <!-- Analytics Content -->
                 <div id="analytics" class="page-content hidden">
                     <h1 class="text-2xl font-bold text-gray-800 mb-6">Analytics Deep Dive</h1>
                      <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-6">
-                        <div class="glass-card lg:col-span-3 p-6"><h3 class="text-lg font-semibold mb-4 text-gray-700">Monthly Ad Spend (Google vs Meta)</h3><div class="h-80"><canvas id="monthlySpendChart"></canvas></div></div>
-                        <div class="glass-card lg:col-span-2 p-6 flex flex-col"><h3 class="text-lg font-semibold mb-4 text-gray-700">Campaign Type Performance</h3><div class="h-80"><canvas id="campaignTypeChart"></canvas></div></div>
+                        <div class="neumorphic-card lg:col-span-3 p-6"><h3 class="text-lg font-semibold mb-4 text-gray-700">Monthly Ad Spend (Google vs Meta)</h3><div class="h-80"><canvas id="monthlySpendChart"></canvas></div></div>
+                        <div class="neumorphic-card lg:col-span-2 p-6 flex flex-col"><h3 class="text-lg font-semibold mb-4 text-gray-700">Campaign Type Performance</h3><div class="h-80"><canvas id="campaignTypeChart"></canvas></div></div>
                     </div>
-                    <div class="glass-card p-6 mt-6">
+                    <div class="neumorphic-card p-6 mt-6">
                         <h3 class="text-lg font-semibold mb-2 text-gray-700">Campaign Performance (Google & Meta Ads)</h3>
-                        <div class="table-container overflow-auto max-h-96"><table class="w-full text-sm text-left"><thead class="text-xs text-gray-500 uppercase bg-slate-100 sticky top-0"><tr><th class="px-4 py-3">Campaign Name</th><th class="px-4 py-3">Platform</th><th class="px-4 py-3">Cost (₹)</th><th class="px-4 py-3">Impressions</th><th class="px-4 py-3">Clicks/Engage</th><th class="px-4 py-3">Leads</th></tr></thead><tbody id="campaigns-table" class="text-gray-600"></tbody></table></div>
+                        <div class="table-container overflow-auto max-h-96"><table class="w-full text-sm text-left"><thead class="text-xs text-gray-500 uppercase bg-slate-200 sticky top-0"><tr><th class="px-4 py-3">Campaign Name</th><th class="px-4 py-3">Platform</th><th class="px-4 py-3">Cost (₹)</th><th class="px-4 py-3">Impressions</th><th class="px-4 py-3">Clicks/Engage</th><th class="px-4 py-3">Leads</th></tr></thead><tbody id="campaigns-table" class="text-gray-600"></tbody></table></div>
                     </div>
                 </div>
 
@@ -150,14 +153,14 @@
                         <h1 class="text-2xl font-bold text-gray-800">Quarterly Performance Report</h1>
                         <button id="download-report-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg flex items-center shadow-md"><svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>Download PDF</button>
                     </header>
-                    <div class="glass-card p-8" id="report-content">
+                    <div class="neumorphic-card p-8" id="report-content">
                         <h2 class="text-xl font-bold text-gray-800 mb-4">Q2 vs Q3 2025 Comparison</h2>
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                             <div>
                                 <h3 class="font-semibold text-lg mb-2 text-gray-700">Performance Metrics</h3>
                                 <div class="table-container overflow-auto">
                                     <table class="w-full text-sm text-left">
-                                        <thead class="text-xs text-gray-500 uppercase bg-slate-100">
+                                        <thead class="text-xs text-gray-500 uppercase bg-slate-200">
                                             <tr>
                                                 <th class="px-4 py-3">Metric</th>
                                                 <th class="px-4 py-3 text-right">Q2 2025</th>
@@ -179,8 +182,8 @@
                 <!-- Settings Content -->
                  <div id="settings" class="page-content hidden">
                     <h1 class="text-2xl font-bold text-gray-800 mb-6">Settings</h1>
-                    <div class="glass-card p-6 max-w-2xl mx-auto">
-                        <h2 class="text-xl font-semibold mb-6 text-gray-800 border-b pb-3">Preferences</h2>
+                    <div class="neumorphic-card p-6 max-w-2xl mx-auto">
+                        <h2 class="text-xl font-semibold mb-6 text-gray-800 border-b border-gray-300 pb-3">Preferences</h2>
                         <div class="space-y-6">
                             <div class="flex items-center justify-between"><label for="theme-toggle" class="text-gray-600 font-medium">Theme</label><span class="text-sm text-gray-500">Current: Light Mode</span></div>
                             <div class="flex items-center justify-between"><label for="email-notifications" class="text-gray-600 font-medium">Email Notifications</label><div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"><input type="checkbox" name="toggle" id="email-notifications" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/><label for="email-notifications" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label></div></div>
@@ -359,14 +362,18 @@
                         charts['performanceChart'] = new Chart(performanceCanvas, { type: 'line', data: { labels: chartLabels, datasets: [ { label: 'Clicks', data: chartLabels.map(m => monthlyData[m].Clicks), borderColor: '#4f46e5', tension: 0.3, pointBackgroundColor: '#4f46e5', pointRadius: 4 }, { label: 'Impressions', data: chartLabels.map(m => monthlyData[m].Impressions), borderColor: '#14b8a6', tension: 0.3, pointBackgroundColor: '#14b8a6', pointRadius: 4 } ] }, options: chartOptions() });
                     }
                     
-                    const channelCanvas = document.getElementById('channelChart');
-                    if (channelCanvas && !charts['channelChart']) { 
-                        charts['channelChart'] = new Chart(channelCanvas, { type: 'doughnut', data: { labels: Object.keys(channelData), datasets: [{ data: Object.values(channelData), backgroundColor: ['#4f46e5', '#14b8a6', '#f59e0b'], borderColor: '#f1f5f9' }] }, options: chartOptions(true) });
+                    if (!charts['channelChart']) {
+                        const channelCanvas = document.getElementById('channelChart');
+                        if(channelCanvas) {
+                            charts['channelChart'] = new Chart(channelCanvas, { type: 'doughnut', data: { labels: Object.keys(channelData), datasets: [{ data: Object.values(channelData), backgroundColor: ['#4f46e5', '#14b8a6', '#f59e0b'], borderColor: '#f1f5f9' }] }, options: chartOptions(true) });
+                        }
                     }
 
-                    const deviceCanvas = document.getElementById('deviceChart');
-                     if (deviceCanvas && !charts['deviceChart']) { 
-                        charts['deviceChart'] = new Chart(deviceCanvas, { type: 'doughnut', data: { labels: Object.keys(deviceData), datasets: [{ data: Object.values(deviceData), backgroundColor: ['#ef4444', '#f97316', '#eab308'], borderColor: '#f1f5f9' }] }, options: chartOptions(true) });
+                    if (!charts['deviceChart']) {
+                        const deviceCanvas = document.getElementById('deviceChart');
+                        if(deviceCanvas){
+                            charts['deviceChart'] = new Chart(deviceCanvas, { type: 'doughnut', data: { labels: Object.keys(deviceData), datasets: [{ data: Object.values(deviceData), backgroundColor: ['#ef4444', '#f97316', '#eab308'], borderColor: '#f1f5f9' }] }, options: chartOptions(true) });
+                        }
                     }
                 }
 
@@ -458,7 +465,7 @@
             return null;
         }
 
-        function calculateQuarterlyData() {
+        function calculateAndDisplayQuarterlyData() {
             const q2Data = { revenue: 0, adSpend: 0, leads: 0, clicks: 0, impressions: 0 };
             const q3Data = { revenue: 0, adSpend: 0, leads: 0, clicks: 0, impressions: 0 };
 
@@ -484,8 +491,8 @@
                 }
             }
             
-            q2Data.revenue = revenueData['2025-04'] + revenueData['2025-05'] + revenueData['2025-06'];
-            q3Data.revenue = revenueData['2025-07'] + revenueData['2025-08'] + revenueData['2025-09'];
+            q2Data.revenue = (revenueData['2025-04'] || 0) + (revenueData['2025-05'] || 0) + (revenueData['2025-06'] || 0);
+            q3Data.revenue = (revenueData['2025-07'] || 0) + (revenueData['2025-08'] || 0) + (revenueData['2025-09'] || 0);
             
             q2Data.roas = q2Data.adSpend > 0 ? q2Data.revenue / q2Data.adSpend : 0;
             q3Data.roas = q3Data.adSpend > 0 ? q3Data.revenue / q3Data.adSpend : 0;
@@ -496,7 +503,12 @@
             q2Data.ctr = q2Data.impressions > 0 ? (q2Data.clicks / q2Data.impressions) * 100 : 0;
             q3Data.ctr = q3Data.impressions > 0 ? (q3Data.clicks / q3Data.impressions) * 100 : 0;
 
-            const qoqGrowth = (q3, q2) => q2 > 0 ? (((q3 - q2) / q2) * 100).toFixed(2) + '%' : 'N/A';
+            const qoqGrowth = (q3, q2) => {
+                if (q2 === 0 && q3 > 0) return '+∞%';
+                if (q2 === 0 && q3 === 0) return '0.00%';
+                if (q2 > 0 && q3 === 0) return '-100.00%';
+                return (((q3 - q2) / q2) * 100).toFixed(2) + '%';
+            }
             
             const tableBody = document.getElementById('quarterly-comparison-table');
             if(!tableBody) return;
