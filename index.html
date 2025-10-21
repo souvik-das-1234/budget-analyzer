@@ -487,20 +487,6 @@
                     if(monthlySpendCanvas){
                         charts['monthlySpendChart'] = new Chart(monthlySpendCanvas, {type: 'bar', data: {labels: revChartLabels, datasets: [{label: 'Google Ads', data: monthlySpendBreakdown.google, backgroundColor: '#34a853'}, {label: 'Meta Ads', data: monthlySpendBreakdown.meta, backgroundColor: '#4267b2'}]}, options: {...chartOptions(), scales: {...chartOptions().scales, x: {...chartOptions().scales.x, stacked: true}, y: {...chartOptions().scales.y, stacked: true, ticks: {callback: (v) => formatLargeNumber(v)}}}}});
                     }
-
-                    if (!charts['geoChart']) {
-                        const geoCanvas = document.getElementById('geoChart');
-                        if(geoCanvas) {
-                            fetch('https://unpkg.com/world-atlas/countries-110m.json').then(r => r.json()).then(data => { const countries = ChartGeo.topojson.feature(data, data.objects.countries).features; const countryNameMap = { "United States": "United States of America" }; const chartData = countries.map(d => ({ feature: d, value: (topCountriesData.find(c => (countryNameMap[c.Country] || c.Country) === d.properties.name) || {}).Clicks || 0 })); charts['geoChart'] = new Chart(geoCanvas.getContext('2d'), { type: 'choropleth', data: { labels: countries.map(d => d.properties.name), datasets: [{ label: 'Countries', data: chartData }] }, options: { responsive: true, maintainAspectRatio: false, showOutline: true, showGraticule: false, plugins: { legend: { display: false } }, scales: { xy: { projection: 'equalEarth' }, color: { axis: 'x', interpolate: 'Blues', legend: { position: 'bottom', align: 'start' } } } } }); });
-                        }
-                    }
-                    
-                    if (!charts['searchAppearanceChart']) {
-                        const searchAppearanceCanvas = document.getElementById('searchAppearanceChart');
-                        if (searchAppearanceCanvas) {
-                            charts['searchAppearanceChart'] = new Chart(searchAppearanceCanvas, { type: 'bar', data: { labels: Object.keys(searchAppearanceData), datasets: [{ label: 'Clicks', data: Object.values(searchAppearanceData), backgroundColor: ['#10b981', '#ef4444'] }] }, options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y' } });
-                        }
-                    }
                 }
                  if (activeTab === 'reports') {
                     calculateAndDisplayQuarterlyData();
@@ -751,4 +737,5 @@
     </script>
 </body>
 </html>
+
 
