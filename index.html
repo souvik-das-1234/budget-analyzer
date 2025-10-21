@@ -185,6 +185,21 @@
                         </div>
                     </div>
                 </div>
+                 <!-- Prediction Section -->
+                <div id="prediction" class="page-content hidden">
+                    <div class="glass-card p-6 mb-6">
+                        <div class="flex flex-col sm:flex-row justify-between items-center mb-2">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2 sm:mb-0">Predictive Analytics: Clicks Forecast</h3>
+                            <div class="flex items-center space-x-2">
+                                <label for="forecast-months" class="text-sm text-gray-500">Months to predict:</label>
+                                <input type="number" id="forecast-months" value="3" min="1" max="12" class="w-16 bg-gray-100 border border-gray-300 text-gray-700 rounded-md p-1 text-center text-sm">
+                                <button id="predict-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-1.5 px-4 rounded-lg text-sm">Predict</button>
+                            </div>
+                        </div>
+                        <div class="h-80"><canvas id="forecastChart"></canvas></div>
+                    </div>
+                </div>
+
             </div>
         </main>
     </div>
@@ -291,7 +306,6 @@
         let charts = {};
         const mainContent = document.querySelector('.main-content');
         
-        // --- Date Header ---
         const currentDateEl = document.getElementById('current-date');
         if (currentDateEl) {
             currentDateEl.textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -304,8 +318,7 @@
         const updateDashboard = (startDate, endDate) => {
             mainContent.classList.add('loading');
             
-            setTimeout(() => { // Simulate async data fetching
-                // --- Filter Data Based on Date Range ---
+            setTimeout(() => { 
                 const filteredPerformance = performanceData.filter(d => new Date(d.Date) >= startDate && new Date(d.Date) <= endDate);
                 const filteredCampaigns = allCampaignsData.filter(d => new Date(d.date) >= startDate && new Date(d.date) <= endDate);
                 const filteredRevenue = Object.entries(revenueData).filter(([key, val]) => {
@@ -313,7 +326,6 @@
                     return monthDate >= new Date(startDate.getFullYear(), startDate.getMonth(), 1) && monthDate <= endDate;
                 });
 
-                // --- KPI Calculations & Population ---
                 const totalAdSpend = filteredCampaigns.reduce((s, c) => s + c.cost, 0);
                 const totalRevenue = filteredRevenue.reduce((s, [, val]) => s + val, 0);
                 const totalLeads = filteredCampaigns.reduce((s, c) => s + (c.leads || 0), 0);
@@ -322,42 +334,27 @@
                 const totalClicks = filteredPerformance.reduce((s, i) => s + i.Clicks, 0);
                 const totalImpressions = filteredPerformance.reduce((s, i) => s + i.Impressions, 0);
 
-                const totalRevenueEl = document.getElementById('total-revenue');
-                if (totalRevenueEl) totalRevenueEl.textContent = formatLargeNumber(totalRevenue);
-                
-                const adSpendEl = document.getElementById('ad-spend');
-                if (adSpendEl) adSpendEl.textContent = formatLargeNumber(totalAdSpend);
-
-                const roasEl = document.getElementById('roas');
-                if (roasEl) roasEl.textContent = overallRoas.toFixed(2) + 'x';
-                
-                const totalLeadsEl = document.getElementById('total-leads');
-                if (totalLeadsEl) totalLeadsEl.textContent = totalLeads.toLocaleString('en-IN');
-                
-                const cplEl = document.getElementById('cpl');
-                if (cplEl) cplEl.textContent = formatIndianCurrency(cpl);
+                document.getElementById('total-revenue').textContent = formatLargeNumber(totalRevenue);
+                document.getElementById('ad-spend').textContent = formatLargeNumber(totalAdSpend);
+                document.getElementById('roas').textContent = overallRoas.toFixed(2) + 'x';
+                document.getElementById('total-leads').textContent = totalLeads.toLocaleString('en-IN');
+                document.getElementById('cpl').textContent = formatIndianCurrency(cpl);
                 
                 const reportRevenueEl = document.getElementById('report-revenue');
                 if(reportRevenueEl) reportRevenueEl.textContent = formatIndianCurrency(totalRevenue);
-
                 const reportRoasEl = document.getElementById('report-roas');
                 if(reportRoasEl) reportRoasEl.textContent = overallRoas.toFixed(2) + 'x';
-
                 const reportClicksEl = document.getElementById('report-clicks');
                 if(reportClicksEl) reportClicksEl.textContent = totalClicks.toLocaleString('en-IN');
-                
                 const reportImpressionsEl = document.getElementById('report-impressions');
                 if(reportImpressionsEl) reportImpressionsEl.textContent = totalImpressions.toLocaleString('en-IN');
-
                 const reportDateRangeEl = document.getElementById('report-date-range');
                 if(reportDateRangeEl) reportDateRangeEl.textContent = `Report for ${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`;
 
-                // --- Populate Tables ---
                 populateTable('queries-table', topQueriesData, [{key: 'Query'}, {key: 'Clicks', isNumeric: true, formatter: (d) => d.toLocaleString('en-IN')}, {key: 'Impressions', isNumeric: true, formatter: (d) => d.toLocaleString('en-IN')}]);
                 populateTable('pages-table', topPagesData, [{key: 'Page'}, {key: 'Clicks', isNumeric: true, formatter: (d) => d.toLocaleString('en-IN')}, {key: 'Impressions', isNumeric: true, formatter: (d) => d.toLocaleString('en-IN')}]);
                 populateTable('campaigns-table', filteredCampaigns, [{key: 'name'}, {key: 'platform'}, {key: 'cost', isNumeric: true, formatter: (d) => formatIndianCurrency(d)}, {key: 'impressions', isNumeric: true, formatter: (d) => d.toLocaleString('en-IN')}, {key: 'clicks', isNumeric: true, formatter: (d) => d.toLocaleString('en-IN')}, {key: 'leads', isNumeric: true, formatter: (d) => d.toLocaleString('en-IN')}]);
                 
-                // --- Chart Logic ---
                 const chartOptions = (isDonut = false) => ({ responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#334155', boxWidth: 10, font: { size: 12 } }, position: isDonut ? 'top' : 'bottom', align: 'start' }, tooltip: { bodyFont: { size: 12 }, titleFont: { size: 14 } } }, scales: isDonut ? {} : { x: { ticks: { color: '#64748b', font: {size: 10} }, grid: { color: 'rgba(0, 0, 0, 0.05)' } }, y: { ticks: { color: '#64748b', font: {size: 10} }, grid: { color: 'rgba(0, 0, 0, 0.1)' } } } });
                 const destroyChart = (chartId) => { if (charts[chartId]) charts[chartId].destroy(); };
 
@@ -371,24 +368,14 @@
                         destroyChart('performanceChart');
                         charts['performanceChart'] = new Chart(performanceCanvas, { type: 'line', data: { labels: chartLabels, datasets: [ { label: 'Clicks', data: chartLabels.map(m => monthlyData[m].Clicks), borderColor: '#4f46e5', tension: 0.3, pointBackgroundColor: '#4f46e5', pointRadius: 4 }, { label: 'Impressions', data: chartLabels.map(m => monthlyData[m].Impressions), borderColor: '#14b8a6', tension: 0.3, pointBackgroundColor: '#14b8a6', pointRadius: 4 } ] }, options: chartOptions() });
                     }
+                }
 
-                    const channelCanvas = document.getElementById('channelChart');
-                    if(channelCanvas) {
-                        destroyChart('channelChart');
-                        charts['channelChart'] = new Chart(channelCanvas, { type: 'doughnut', data: { labels: Object.keys(channelData), datasets: [{ data: Object.values(channelData), backgroundColor: ['#4f46e5', '#14b8a6', '#f59e0b'], borderColor: '#f1f5f9' }] }, options: chartOptions(true) });
-                    }
+                const monthlySpendRevenue = {};
+                filteredCampaigns.forEach(c => { const month = new Date(c.date).toLocaleString('default', {month: 'short'}); if (!monthlySpendRevenue[month]) monthlySpendRevenue[month] = {spend: 0, revenue: 0}; monthlySpendRevenue[month].spend += c.cost; });
+                filteredRevenue.forEach(([key, val]) => { const month = new Date(key).toLocaleString('default', {month: 'short'}); if(monthlySpendRevenue[month]) monthlySpendRevenue[month].revenue += val; });
+                const revChartLabels = Object.keys(monthlySpendRevenue).sort((a,b) => new Date(`01 ${a} 2025`) - new Date(`01 ${b} 2025`));
 
-                    const deviceCanvas = document.getElementById('deviceChart');
-                    if(deviceCanvas) {
-                        destroyChart('deviceChart');
-                        charts['deviceChart'] = new Chart(deviceCanvas, { type: 'doughnut', data: { labels: Object.keys(deviceData), datasets: [{ data: Object.values(deviceData), backgroundColor: ['#ef4444', '#f97316', '#eab308'], borderColor: '#f1f5f9' }] }, options: chartOptions(true) });
-                    }
-                    
-                    const monthlySpendRevenue = {};
-                    filteredCampaigns.forEach(c => { const month = new Date(c.date).toLocaleString('default', {month: 'short'}); if (!monthlySpendRevenue[month]) monthlySpendRevenue[month] = {spend: 0, revenue: 0}; monthlySpendRevenue[month].spend += c.cost; });
-                    filteredRevenue.forEach(([key, val]) => { const month = new Date(key).toLocaleString('default', {month: 'short'}); if(monthlySpendRevenue[month]) monthlySpendRevenue[month].revenue += val; });
-                    const revChartLabels = Object.keys(monthlySpendRevenue).sort((a,b) => new Date(`01 ${a} 2025`) - new Date(`01 ${b} 2025`));
-
+                if(activeTab === 'dashboard'){
                     const revenueCanvas = document.getElementById('revenueChart');
                     if (revenueCanvas) {
                         destroyChart('revenueChart');
@@ -401,11 +388,24 @@
                         destroyChart('roasChart');
                         charts['roasChart'] = new Chart(roasCanvas, { type: 'line', data: { labels: revChartLabels, datasets: [{ label: 'Monthly ROAS', data: monthlyRoas, borderColor: '#f97316', tension: 0.3 }] }, options: { ...chartOptions(), plugins: {legend: { display: false }}, scales: { ...chartOptions().scales, y: { ...chartOptions().scales.y, title: { display: true, text: 'ROAS (x)', color: '#9ca3af', font:{size:10} } } } } });
                     }
+
+                     const adSpendSlider = document.getElementById('ad-spend-slider');
+                     if (adSpendSlider) {
+                        const updateForecastMetrics = () => {
+                            const spend = parseFloat(adSpendSlider.value);
+                            document.getElementById('ad-spend-value').textContent = formatIndianCurrency(spend);
+                            const predictedRevenue = spend * overallRoas;
+                            const predictedLeads = cpl > 0 ? spend / cpl : 0;
+                            document.getElementById('predicted-revenue').textContent = formatLargeNumber(predictedRevenue);
+                            document.getElementById('predicted-roas').textContent = overallRoas.toFixed(2) + 'x';
+                            document.getElementById('predicted-leads').textContent = Math.round(predictedLeads).toLocaleString('en-IN');
+                        };
+                        adSpendSlider.oninput = updateForecastMetrics; 
+                        updateForecastMetrics();
+                    }
                 }
 
                 if(activeTab === 'analytics') {
-                    const revChartLabels = [...new Set(filteredCampaigns.map(c => new Date(c.date).toLocaleString('default', {month: 'short'})))].sort((a,b) => new Date(`01 ${a} 2025`) - new Date(`01 ${b} 2025`));
-                    
                     const campaignTypes = filteredCampaigns.reduce((acc, camp) => { const type = camp.type || 'N/A'; if (!acc[type]) acc[type] = {cost: 0, leads: 0}; acc[type].cost += camp.cost; acc[type].leads += (camp.leads || 0); return acc; }, {});
                     destroyChart('campaignTypeChart');
                     const campaignTypeCanvas = document.getElementById('campaignTypeChart');
@@ -436,38 +436,11 @@
                     }
                 }
 
-
-                // --- Interactive Slider & Forecaster ---
-                const adSpendSlider = document.getElementById('ad-spend-slider');
-                if (adSpendSlider) {
-                    const updateForecastMetrics = () => {
-                        const spend = parseFloat(adSpendSlider.value);
-                        const spendValueEl = document.getElementById('ad-spend-value');
-                        if(spendValueEl) spendValueEl.textContent = formatIndianCurrency(spend);
-                        
-                        const predictedRevenue = spend * overallRoas;
-                        const predictedLeads = cpl > 0 ? spend / cpl : 0;
-                        
-                        const predRevEl = document.getElementById('predicted-revenue');
-                        if(predRevEl) predRevEl.textContent = formatLargeNumber(predictedRevenue);
-
-                        const predRoasEl = document.getElementById('predicted-roas');
-                        if(predRoasEl) predRoasEl.textContent = overallRoas.toFixed(2) + 'x';
-
-                        const predLeadsEl = document.getElementById('predicted-leads');
-                        if(predLeadsEl) predLeadsEl.textContent = Math.round(predictedLeads).toLocaleString('en-IN');
-                    };
-                    adSpendSlider.oninput = updateForecastMetrics; 
-                    updateForecastMetrics();
-                }
-                
                 createForecast();
-
                 mainContent.classList.remove('loading');
             }, 300);
         };
         
-        // --- Initialization ---
         const fp = flatpickr("#date-range", {
             mode: "range",
             dateFormat: "Y-m-d",
@@ -514,7 +487,7 @@
             if (forecastChart) forecastChart.destroy();
             const displayLabels = chartLabels.map(m => new Date(m + '-01T12:00:00Z').toLocaleString('default', { month: 'short', year: '2-digit' }));
             
-            forecastChart = new Chart(forecastCanvas, { type: 'line', data: { labels: [...displayLabels, ...futureLabels], datasets: [ { label: 'Historical Clicks', data: [...clicksData, ...Array(monthsToPredict).fill(null)], borderColor: '#4f46e5', tension: 0.3 }, { label: 'Forecasted Clicks', data: [...Array(historicalMonths - 1).fill(null), clicksData[historicalMonths.length - 1], ...futureData], borderColor: '#14b8a6', borderDash: [5, 5], tension: 0.3 } ] }, options: {responsive: true, maintainAspectRatio: false} }); 
+            forecastChart = new Chart(forecastCanvas, { type: 'line', data: { labels: [...displayLabels, ...futureLabels], datasets: [ { label: 'Historical Clicks', data: [...clicksData, ...Array(monthsToPredict).fill(null)], borderColor: '#4f46e5', tension: 0.3 }, { label: 'Forecasted Clicks', data: [...Array(historicalMonths - 1).fill(null), clicksData[clicksData.length - 1], ...futureData], borderColor: '#14b8a6', borderDash: [5, 5], tension: 0.3 } ] }, options: {responsive: true, maintainAspectRatio: false} }); 
         }
 
         const predictBtn = document.getElementById('predict-btn');
