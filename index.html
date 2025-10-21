@@ -124,13 +124,12 @@
                 <div class="card p-3 flex flex-col justify-between"><h3 class="text-xs font-medium text-gray-400">Cost Per Lead</h3><p id="cpl" class="text-2xl font-bold text-white">--</p></div>
             </div>
 
-            <!-- NEW Interactive Forecaster -->
             <div class="card p-4 mb-6">
                  <h3 class="text-base font-semibold mb-4 text-white">Interactive ROAS & Lead Forecaster</h3>
                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                     <div>
                         <label for="ad-spend-slider" class="block text-sm font-medium text-gray-400 mb-2">Simulated Monthly Ad Spend: <span id="ad-spend-value" class="font-bold text-white"></span></label>
-                        <input id="ad-spend-slider" type="range" min="10000" max="100000" value="45000" step="1000" class="w-full">
+                        <input id="ad-spend-slider" type="range" min="10000" max="200000" value="50000" step="1000" class="w-full">
                         <div class="grid grid-cols-3 gap-4 mt-4 text-center">
                             <div><p class="text-xs text-gray-400">Predicted Revenue</p><p id="predicted-revenue" class="text-xl font-bold text-green-400">--</p></div>
                             <div><p class="text-xs text-gray-400">Predicted ROAS</p><p id="predicted-roas" class="text-xl font-bold text-white">--</p></div>
@@ -173,7 +172,7 @@
             </div>
             <div class="card p-4 mt-6">
                 <h3 class="text-base font-semibold mb-2 text-white">Campaign Performance (Google & Meta Ads)</h3>
-                <div class="table-container overflow-auto max-h-96"><table class="w-full text-sm text-left"><thead class="text-xs text-gray-300 uppercase table-header sticky top-0"><tr><th class="px-4 py-2">Campaign Name</th><th class="px-4 py-2">Platform</th><th class="px-4 py-2">Cost (₹)</th><th class="px-4 py-2">Impressions</th><th class="px-4 py-2">Clicks/Engagements</th></tr></thead><tbody id="campaigns-table"></tbody></table></div>
+                <div class="table-container overflow-auto max-h-96"><table class="w-full text-sm text-left"><thead class="text-xs text-gray-300 uppercase table-header sticky top-0"><tr><th class="px-4 py-2">Campaign Name</th><th class="px-4 py-2">Platform</th><th class="px-4 py-2">Cost (₹)</th><th class="px-4 py-2">Impressions</th><th class="px-4 py-2">Clicks/Engage</th><th class="px-4 py-2">Leads</th></tr></thead><tbody id="campaigns-table"></tbody></table></div>
             </div>
         </div>
 
@@ -217,16 +216,105 @@
         const topPagesData = [ {"Page":"/blog_details/top-10-plywood-manufacturers-in-india","Clicks":7012,"Impressions":190132}, {"Page":"/","Clicks":4249,"Impressions":47002}, {"Page":"/blog_details/top-10-wooden-fire-rated-door-companies-in-india","Clicks":675,"Impressions":22101}, {"Page":"/blog_details/best-quality-plywood","Clicks":632,"Impressions":26803}, {"Page":"/blog_details/no-1-waterproof-plywood-india","Clicks":623,"Impressions":23970}, {"Page":"/blog_details/plywood-strongest","Clicks":502,"Impressions":43016}, {"Page":"/contact","Clicks":466,"Impressions":17431} ];
         const topCountriesData = [ {"Country":"India","Clicks":18128+18146}, {"Country":"United States","Clicks":824+623}, {"Country":"United Kingdom","Clicks":133+107}, {"Country":"Canada","Clicks":128+97}, {"Country":"United Arab Emirates","Clicks":67+60}, {"Country":"Philippines","Clicks":60+53}, {"Country":"Australia","Clicks":62+47}, {"Country":"France","Clicks":40+46}, {"Country":"Singapore","Clicks":40+44}, {"Country":"Germany","Clicks":29+32}];
         const searchAppearanceData = { "Translated results": 482+662, "Product snippets": 0 };
-        const allCampaignsData = [ {"name":"Julekha Leads-Display - 26/04/2025","platform":"Google","cost":2676.02,"impressions":51621,"clicks":1978}, {"name":"Julekha Demand Gen - 2025-04-26","platform":"Google","cost":4999.15,"impressions":324040,"clicks":19165}, {"name":"Website traffic souvik 26/04/2025","platform":"Meta","cost":5821.24,"impressions":97623,"clicks":33293}, {"name":"Julekha Leads - Forms Ads - 29/04/2025","platform":"Meta","cost":6362.26,"impressions":53361,"clicks":241, "leads": 54} ];
-        const metaLeadsData = [ { "campaign": "Julekha Leads - Forms Ads - 29/04/2025", "leads": 54 }, { "campaign": "Test - Julekha Leads - Forms Ads - 26/04/2025", "leads": 593 } ];
+        
+        const googleAdsData = [ {"name":"Julekha Leads-Display - 26/04/2025","platform":"Google","cost":2676.02,"impressions":51621,"clicks":1978}, {"name":"Julekha Demand Gen - 2025-04-26","platform":"Google","cost":4999.15,"impressions":324040,"clicks":19165} ];
+        const metaAdsData = [
+            {"month":"April","campaignName":"Website traffic souvik 26/04/2025","budget":5821.24,"impressions":97623,"leads":0,"engagement":33293, platform: 'Meta'},
+            {"month":"April","campaignName":"Julekha Leads - Forms Ads - 29/04/2025","budget":6362.26,"impressions":53361,"leads":54,"engagement":241, platform: 'Meta'},
+            {"month":"April","campaignName":"Test - Julekha Leads - Forms Ads - 26/04/2025","budget":6393.49,"impressions":659339,"leads":512,"engagement":825, platform: 'Meta'},
+            {"month":"April","campaignName":"Souvik leads campaign 29/04/2025 Campaign","budget":4628.6,"impressions":71252,"leads":31,"engagement":417, platform: 'Meta'},
+            {"month":"April","campaignName":"Follower Ad Souvik 30th April 2025","budget":207.58,"impressions":31964,"leads":0,"engagement":1161, platform: 'Meta'},
+            {"month":"April","campaignName":"Test - Julekha Leads - Forms Ads - 26/04/2025","budget":6393.49,"impressions":959339,"leads":512,"engagement":825, platform: 'Meta'},
+            {"month":"May","campaignName":"Julekha Leads campaign 2 -20/05/2025","budget":20173.67,"impressions":365862,"leads":236,"engagement":2369, platform: 'Meta'},
+            {"month":"May","campaignName":"Julekha Form Leads campaign -20/05/2025","budget":3076.51,"impressions":113018,"leads":38,"engagement":124, platform: 'Meta'},
+            {"month":"May","campaignName":"Julekha Traffic campaign -20/05/2025","budget":4627.43,"impressions":47413,"leads":0,"engagement":5552, platform: 'Meta'},
+            {"month":"May","campaignName":"New Traffic Campaign with recommended settings Instagram Followers Souvik 14/05/2025","budget":547.89,"impressions":54412,"leads":0,"engagement":2288, platform: 'Meta'},
+            {"month":"May","campaignName":"[05/12/2025] Promoting Sylvan Ply facebook followers","budget":403.89,"impressions":25154,"leads":0,"engagement":1874, platform: 'Meta'},
+            {"month":"May","campaignName":"Instagram post: In times of conflict, our...","budget":377.02,"impressions":24037,"leads":0,"engagement":141, platform: 'Meta'},
+            {"month":"May","campaignName":"Post: \"In times of conflict, our responsibility as...\"","budget":339.35,"impressions":76316,"leads":0,"engagement":563, platform: 'Meta'},
+            {"month":"May","campaignName":"Page likes Ad: Tested by rain. Trusted by Mumbaikars. ☔️🚖","budget":145.33,"impressions":23243,"leads":0,"engagement":416, platform: 'Meta'},
+            {"month":"May","campaignName":"Page likes Ad: Types of Plywood buyers - The Smart Buyer!","budget":145.31,"impressions":26906,"leads":0,"engagement":506, platform: 'Meta'},
+            {"month":"May","campaignName":"Page likes Ad: Where others scorch, Sylvan endures💪!","budget":144.12,"impressions":21907,"leads":0,"engagement":606, platform: 'Meta'},
+            {"month":"May","campaignName":"Page likes Ad: Types of Plywood Buyers – The Over-Smart Buyer!😎","budget":142.92,"impressions":21200,"leads":0,"engagement":470, platform: 'Meta'},
+            {"month":"May","campaignName":"Page likes Ad: Sasu Maa ki chalakiyan aur Didi ke nakhre – sab...","budget":142.62,"impressions":22277,"leads":0,"engagement":252, platform: 'Meta'},
+            {"month":"May","campaignName":"Julekha Leads - Forms Ads - 08/05/2025","budget":123.3,"impressions":14874,"leads":1,"engagement":149, platform: 'Meta'},
+            {"month":"May","campaignName":"New page like May Souvik 2025","budget":25.77,"impressions":5285,"leads":0,"engagement":13, platform: 'Meta'},
+            {"month":"June","campaignName":"Julekha Leads campaign - 10/06/2025","budget":12822.85,"impressions":244085,"leads":112,"engagement":6036, platform: 'Meta'},
+            {"month":"June","campaignName":"Souvik-New Leads campaign-27/06/2025","budget":5885.2,"impressions":72339,"leads":43,"engagement":737, platform: 'Meta'},
+            {"month":"June","campaignName":"Website visitors Ad: Your home is your greatest victory. Build it with...","budget":4909.97,"impressions":82421,"leads":0,"engagement":4136, platform: 'Meta'},
+            {"month":"June","campaignName":"Instagram post: Shubho Rath Yatra! ✨","budget":2723.12,"impressions":161481,"leads":0,"engagement":3954, platform: 'Meta'},
+            {"month":"June","campaignName":"Julekha Set 1New Leads campaign -23/06/2025","budget":2056.32,"impressions":16262,"leads":16,"engagement":533, platform: 'Meta'},
+            {"month":"June","campaignName":"Julekha Set 3 New Leads campaign -23/06/2025 – Copy 2","budget":2047.21,"impressions":17081,"leads":21,"engagement":555, platform: 'Meta'},
+            {"month":"June","campaignName":"Page likes Ad: Shubho Rath Yatra! ✨","budget":1438.82,"impressions":73900,"leads":0,"engagement":2589, platform: 'Meta'},
+            {"month":"June","campaignName":"Video views Ad: He didn’t say much.","budget":1284.64,"impressions":174402,"leads":0,"engagement":112653, platform: 'Meta'},
+            {"month":"June","campaignName":"Julekha Set 2 New Leads campaign -23/06/2025 – Copy","budget":462.73,"impressions":6784,"leads":1,"engagement":50, platform: 'Meta'},
+            {"month":"June","campaignName":"Video views Ad: Boiling point? We don’t even flinch. 💧🔥","budget":407.86,"impressions":91701,"leads":0,"engagement":52495, platform: 'Meta'},
+            {"month":"June","campaignName":"Instagram post: Why dream of luxury, when you can...","budget":208.09,"impressions":6967,"leads":0,"engagement":470, platform: 'Meta'},
+            {"month":"June","campaignName":"Page likes Ad:instagram- Boiling point? We don’t even flinch -10/06/2025 💧🔥","budget":148.23,"impressions":5945,"leads":0,"engagement":134, platform: 'Meta'},
+            {"month":"July","campaignName":"Julekha -New Leads campaign12/07/2025","budget":13137.44,"impressions":178936,"leads":254,"engagement":28221, platform: 'Meta'},
+            {"month":"July","campaignName":"Instagram post: We’re excited to meet you all, 🤭...","budget":1770.84,"impressions":16938,"leads":0,"engagement":6825, platform: 'Meta'},
+            {"month":"July","campaignName":"Page likes Ad: Designing our home was a dream but also a million...","budget":1060.03,"impressions":10252,"leads":0,"engagement":4319, platform: 'Meta'},
+            {"month":"July","campaignName":"Page likes Ad: Here are my top 3 plywood choices that combine...","budget":1095.47,"impressions":9121,"leads":0,"engagement":2980, platform: 'Meta'},
+            {"month":"July","campaignName":"Instagram post: Tested by rain. Trusted by...","budget":1662.88,"impressions":265434,"leads":0,"engagement":2259, platform: 'Meta'},
+            {"month":"July","campaignName":"Page likes Ad: Chinese ho ya Italian, plans kuch bhi ho – Sylvan..","budget":1770.84,"impressions":16938,"leads":0,"engagement":6825, platform: 'Meta'},
+            {"month":"July","campaignName":"Instagram post: Elevate your interiors with...","budget":1391.28,"impressions":42814,"leads":0,"engagement":5905, platform: 'Meta'},
+            {"month":"July","campaignName":"Page likes Ad: Elevate your interiors with craftsmanship that...","budget":1383.57,"impressions":12545,"leads":0,"engagement":5071, platform: 'Meta'},
+            {"month":"July","campaignName":"Instagram post: Not just fire-resistant — i","budget":791.06,"impressions":18909,"leads":0,"engagement":1600, platform: 'Meta'},
+            {"month":"August","campaignName":"Julekha -New Leads campaign-11/08/2025","budget":15542.16,"impressions":179159,"leads":266,"engagement":24803, platform: 'Meta'},
+            {"month":"August","campaignName":"Instagram post: Freedom doesn’t look the same for...","budget":1805.34,"impressions":58740,"leads":0,"engagement":8953, platform: 'Meta'},
+            {"month":"August","campaignName":"Instagram post: May the foundation of your home","budget":673.91,"impressions":7019,"leads":0,"engagement":3007, platform: 'Meta'},
+            {"month":"August","campaignName":"Page likes Ad: May the foundation of your home be as strong as..","budget":699.51,"impressions":15295,"leads":0,"engagement":9995, platform: 'Meta'},
+            {"month":"August","campaignName":"Instagram post: May Lord Krishna’s divine.","budget":748.25,"impressions":19448,"leads":0,"engagement":7340, platform: 'Meta'},
+            {"month":"August","campaignName":"Page likes Ad: May Lord Krishna’s divine blessings shield your...","budget":744.86,"impressions":60843,"leads":0,"engagement":21573, platform: 'Meta'},
+            {"month":"August","campaignName":"Instagram post: Freedom doesn’t look the same for...","budget":805.65,"impressions":38721,"leads":0,"engagement":5598, platform: 'Meta'},
+            {"month":"August","campaignName":"Page likes Ad: Freedom doesn’t look the same for all of us,","budget":1789.28,"impressions":26580,"leads":0,"engagement":6757, platform: 'Meta'},
+            {"month":"August","campaignName":"Instagram post: Freedom doesn’t look the same for...","budget":144.36,"impressions":4972,"leads":0,"engagement":626, platform: 'Meta'},
+            {"month":"August","campaignName":"Page likes Ad: Freedom doesn’t look the same for all of us,","budget":168.09,"impressions":2555,"leads":0,"engagement":556, platform: 'Meta'},
+            {"month":"August","campaignName":"Instagram post: Not just fire-resistant — i","budget":74.52,"impressions":1900,"leads":0,"engagement":143, platform: 'Meta'},
+            {"month":"August","campaignName":"Instagram post: Elevate your interiors wi","budget":70.78,"impressions":2153,"leads":0,"engagement":277, platform: 'Meta'},
+            {"month":"August","campaignName":"Page likes Ad: Elevate your interiors with","budget":62.55,"impressions":6077,"leads":0,"engagement":279, platform: 'Meta'},
+            {"month":"August","campaignName":"Page likes Ad: May the foundation of your h","budget":46.82,"impressions":1033,"leads":0,"engagement":72, platform: 'Meta'},
+            {"month":"August","campaignName":"Instagram post: May the foundation of your home...","budget":42.17,"impressions":346,"leads":0,"engagement":148, platform: 'Meta'},
+            {"month":"August","campaignName":"Page likes Ad: Freedom doesn’t look the same for all of us","budget":35.45,"impressions":248,"leads":0,"engagement":80, platform: 'Meta'},
+            {"month":"August","campaignName":"Instagram post: Freedom doesn’t look the same for.","budget":23.73,"impressions":174,"leads":0,"engagement":50, platform: 'Meta'},
+            {"month":"September","campaignName":"Julekha Leads campaign - 05/09/2025","budget":4961.18,"impressions":58442,"leads":179,"engagement":7841, platform: 'Meta'},
+            {"month":"September","campaignName":"[22/09/2025] Promoting Sylvan Ply","budget":1933.73,"impressions":50731,"leads":0,"engagement":4539, platform: 'Meta'},
+            {"month":"September","campaignName":"[23/9/2025] Sylvan Ply প্রচার করা হচ্ছে (navratri 1st day)","budget":1704.87,"impressions":15022,"leads":0,"engagement":5436, platform: 'Meta'},
+            {"month":"September","campaignName":"New Awareness campaign- Srishti Singh,","budget":1354.23,"impressions":464916,"leads":0,"engagement":29510, platform: 'Meta'},
+            {"month":"September","campaignName":"Instagram পোস্ট: Don’t toss that plywood","budget":1124.84,"impressions":36961,"leads":0,"engagement":21213, platform: 'Meta'},
+            {"month":"September","campaignName":"Page likes Ad: From the sweetest hello to","budget":898.55,"impressions":45995,"leads":0,"engagement":15515, platform: 'Meta'},
+            {"month":"September","campaignName":"Instagram post: From the sweetest hell","budget":887.76,"impressions":16992,"leads":0,"engagement":7108, platform: 'Meta'},
+            {"month":"September","campaignName":"[24/9/2025] Sylvan Ply প্রচার করা হচ্ছে(navratri 2nd day)","budget":603.93,"impressions":4224,"leads":0,"engagement":1497, platform: 'Meta'},
+            {"month":"September","campaignName":"Instagram পোস্ট: We all know what every","budget":527.24,"impressions":35380,"leads":0,"engagement":11856, platform: 'Meta'},
+            {"month":"September","campaignName":"Instagram post: This Mahalaya, let’s build..","budget":503.02,"impressions":6991,"leads":0,"engagement":1132, platform: 'Meta'},
+            {"month":"September","campaignName":"[25/9/2025] Sylvan Ply প্রচার করা হচ্ছে (navratri 3)","budget":469.74,"impressions":1933,"leads":0,"engagement":411, platform: 'Meta'},
+            {"month":"September","campaignName":"[21/9/2025] Sylvan Ply প্রচার করা হচ্ছে(navratri 4)","budget":293.85,"impressions":1733,"leads":0,"engagement":235, platform: 'Meta'},
+            {"month":"September","campaignName":"Post: \"Experience the making of India’s Strongest...\"","budget":254.71,"impressions":24172,"leads":0,"engagement":8269, platform: 'Meta'},
+            {"month":"September","campaignName":"Instagram post: Dashami isn’t just a goodbye....","budget":992.29,"impressions":140972,"leads":0,"engagement":68745, platform: 'Meta'},
+            {"month":"September","campaignName":"Instagram post: As the sacred rituals of Sa","budget":476.73,"impressions":4348,"leads":0,"engagement":3005, platform: 'Meta'},
+            {"month":"September","campaignName":"Instagram post: This Dussehra, burn away.","budget":426.77,"impressions":55800,"leads":0,"engagement":1753, platform: 'Meta'},
+            {"month":"September","campaignName":"[29/9/2025] Sylvan Ply প্রচার করা হচ্ছে","budget":425.99,"impressions":9782,"leads":0,"engagement":2717, platform: 'Meta'},
+            {"month":"September","campaignName":"Instagram post: Subho Ashtami!","budget":386.37,"impressions":13870,"leads":0,"engagement":5030, platform: 'Meta'},
+            {"month":"September","campaignName":"Instagram post: The wait is over—Maa has arrived...","budget":380.82,"impressions":4240,"leads":0,"engagement":1830, platform: 'Meta'},
+            {"month":"September","campaignName":"28/9/2025] Sylvan Ply প্রচার করা হচ্ছে","budget":359.42,"impressions":6504,"leads":0,"engagement":2162, platform: 'Meta'},
+            {"month":"September","campaignName":"[30/9/2025] Sylvan Ply প্রচার করা হচ্ছে","budget":348.77,"impressions":4493,"leads":0,"engagement":1419, platform: 'Meta'},
+            {"month":"September","campaignName":"পোস্ট: \"Subho Maha Navami!","budget":206.99,"impressions":3797,"leads":0,"engagement":1292, platform: 'Meta'},
+            {"month":"September","campaignName":"Instagram post: Subho Maha Navami! 🌸 May Maa...","budget":133.33,"impressions":2715,"leads":0,"engagement":1033, platform: 'Meta'},
+            {"month":"September","campaignName":"[2/10/2025] Sylvan Ply প্রচার করা হচ্ছে","budget":459.04,"impressions":4550,"leads":0,"engagement":753, platform: 'Meta'},
+            {"month":"September","campaignName":"[21/9/2025] Sylvan Ply প্রচার করা হচ্ছে","budget":555.33,"impressions":75036,"leads":0,"engagement":362, platform: 'Meta'},
+            {"month":"September","campaignName":"[2/10/2025] Sylvan Ply প্রচার করা হচ্ছে","budget":499.32,"impressions":4550,"leads":0,"engagement":753, platform: 'Meta'},
+        ];
 
         // --- Date Header ---
         document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
         // --- KPI Calculations & Population ---
-        const totalAdSpend = allCampaignsData.reduce((s, c) => s + c.cost, 0);
+        const googleAdSpend = googleAdsData.reduce((s, c) => s + c.cost, 0);
+        const metaAdSpend = metaAdsData.reduce((s, c) => s + c.budget, 0);
+        const totalAdSpend = googleAdSpend + metaAdSpend;
+
         const totalRevenue = Object.values(revenueData).reduce((s, i) => s + i, 0);
-        const totalLeads = metaLeadsData.reduce((s, c) => s + c.leads, 0);
+        const totalLeads = metaAdsData.reduce((s, c) => s + c.leads, 0);
         const overallRoas = totalAdSpend > 0 ? (totalRevenue / totalAdSpend) : 0;
         const cpl = totalLeads > 0 ? (totalAdSpend / totalLeads) : 0;
         
@@ -238,6 +326,11 @@
         document.getElementById('roas').textContent = overallRoas.toFixed(2) + 'x';
         document.getElementById('total-leads').textContent = totalLeads.toLocaleString('en-IN');
         document.getElementById('cpl').textContent = formatIndianCurrency(cpl);
+
+        const allCampaignsData = [
+            ...googleAdsData.map(c => ({ name: c.name, platform: c.platform, cost: c.cost, impressions: c.impressions, clicks: c.clicks, leads: c.leads || 0 })),
+            ...metaAdsData.map(c => ({ name: c.campaignName, platform: c.platform, cost: c.budget, impressions: c.impressions, clicks: c.engagement, leads: c.leads }))
+        ];
 
         const totalClicks = performanceData.reduce((s, i) => s + i.Clicks, 0);
         const totalImpressions = performanceData.reduce((s, i) => s + i.Impressions, 0);
@@ -263,7 +356,7 @@
 
         populateTable('queries-table', topQueriesData, [{key: 'Query'}, {key: 'Clicks', isNumeric: true, formatter: (d) => d.toLocaleString('en-IN')}, {key: 'Impressions', isNumeric: true, formatter: (d) => d.toLocaleString('en-IN')}]);
         populateTable('pages-table', topPagesData, [{key: 'Page'}, {key: 'Clicks', isNumeric: true, formatter: (d) => d.toLocaleString('en-IN')}, {key: 'Impressions', isNumeric: true, formatter: (d) => d.toLocaleString('en-IN')}]);
-        populateTable('campaigns-table', allCampaignsData, [{key: 'name'}, {key: 'platform'}, {key: 'cost', isNumeric: true, formatter: (d) => formatIndianCurrency(d)}, {key: 'impressions', isNumeric: true, formatter: (d) => d.toLocaleString('en-IN')}, {key: 'clicks', isNumeric: true, formatter: (d) => d.toLocaleString('en-IN')}]);
+        populateTable('campaigns-table', allCampaignsData, [{key: 'name'}, {key: 'platform'}, {key: 'cost', isNumeric: true, formatter: (d) => formatIndianCurrency(d)}, {key: 'impressions', isNumeric: true, formatter: (d) => d.toLocaleString('en-IN')}, {key: 'clicks', isNumeric: true, formatter: (d) => d.toLocaleString('en-IN')}, {key: 'leads', isNumeric: true, formatter: (d) => d.toLocaleString('en-IN')}]);
         
         // --- Chart Configs ---
         const monthlyData = performanceData.reduce((acc, item) => { const month = new Date(item.Date).toLocaleString('default', { month: 'short', year: '2-digit' }); if (!acc[month]) acc[month] = { Clicks: 0, Impressions: 0 }; acc[month].Clicks += item.Clicks; acc[month].Impressions += item.Impressions; return acc; }, {});
@@ -280,12 +373,14 @@
         new Chart(document.getElementById('searchAppearanceChart'), { type: 'bar', data: { labels: Object.keys(searchAppearanceData), datasets: [{ label: 'Clicks', data: Object.values(searchAppearanceData), backgroundColor: ['#10b981', '#ef4444'] }] }, options: { ...chartOptions(), indexAxis: 'y' } });
         
         // ROAS Chart
-        const roasMonths = ['April', 'May', 'June'];
+        const roasMonths = ['April', 'May', 'June', 'July', 'August', 'September'];
         const monthlyRoas = roasMonths.map(m => {
             const monthUpper = m.toUpperCase();
-            const spend = adSpendData[monthUpper] || 0;
+            const metaSpend = metaAdsData.filter(ad => ad.month.toLowerCase() === m.toLowerCase()).reduce((sum, ad) => sum + ad.budget, 0);
+            const googleSpend = adSpendData[monthUpper] || 0;
+            const totalMonthlySpend = metaSpend + googleSpend;
             const rev = revenueData[monthUpper] || 0;
-            return spend > 0 ? rev / spend : 0;
+            return totalMonthlySpend > 0 ? rev / totalMonthlySpend : 0;
         });
         new Chart(document.getElementById('roasChart'), { type: 'line', data: { labels: roasMonths, datasets: [{ label: 'Monthly ROAS', data: monthlyRoas, borderColor: '#f97316', tension: 0.3, fill: false }] }, options: { ...chartOptions(), plugins: {legend: { display: false }}, scales: { ...chartOptions().scales, y: { ...chartOptions().scales.y, title: { display: true, text: 'ROAS (x)', color: '#9ca3af', font:{size:10} } } } } });
 
@@ -305,7 +400,7 @@
             const spend = parseFloat(adSpendSlider.value);
             document.getElementById('ad-spend-value').textContent = formatIndianCurrency(spend);
             const predictedRevenue = spend * overallRoas;
-            const predictedLeads = spend / cpl;
+            const predictedLeads = cpl > 0 ? spend / cpl : 0;
             document.getElementById('predicted-revenue').textContent = formatLargeNumber(predictedRevenue);
             document.getElementById('predicted-roas').textContent = overallRoas.toFixed(2) + 'x';
             document.getElementById('predicted-leads').textContent = Math.round(predictedLeads).toLocaleString('en-IN');
