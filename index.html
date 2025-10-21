@@ -3,303 +3,325 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Updated Comprehensive Marketing Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Advanced Marketing Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-geo@4.3.0/build/index.umd.min.js"></script>
+    <script src="https://unpkg.com/topojson-client@3"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
-        :root {
-            --primary-color: #2c3e50; --secondary-color: #3498db; --accent-color: #2980b9;
-            --bg-color: #ecf0f1; --card-bg-color: #ffffff; --text-color: #34495e;
-            --light-text-color: #7f8c8d; --success-color: #27ae60; --warning-color: #e67e22;
-            --shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-        }
-
         body {
-            font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-color);
-            margin: 0; padding: 20px;
+            font-family: 'Inter', sans-serif;
+            background-color: #111827;
+            color: #d1d5db;
         }
-
-        .dashboard-container { max-width: 1400px; margin: auto; display: grid; grid-template-columns: 1fr; gap: 20px; }
-        .card { background-color: var(--card-bg-color); border-radius: 10px; box-shadow: var(--shadow); padding: 20px; }
-        .card-header { font-size: 1.2em; font-weight: 600; margin: 0 0 20px 0; color: var(--primary-color); }
-
-        /* Layout Grid */
-        .main-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: auto;
-            grid-template-areas:
-                "kpi1 kpi3 kpi_roas"
-                "overall overall overall"
-                "leadgen leadgen leadgen"
-                "compare compare forecast"
-                "table chart chart";
-            gap: 20px;
+        .sidebar { background-color: #1f2937; }
+        .card {
+            background-color: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
         }
-        
-        #kpi1 { grid-area: kpi1; } #kpi3 { grid-area: kpi3; } #kpi_roas { grid-area: kpi_roas; }
-        #overall { grid-area: overall; } #leadgen { grid-area: leadgen; } #compare { grid-area: compare; }
-        #forecast { grid-area: forecast; } #table { grid-area: table; } #chart { grid-area: chart; }
-
-        /* KPI Cards */
-        .kpi-card { display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
-        .kpi-card h3 { margin: 0 0 5px 0; font-size: 1em; font-weight: 500; color: var(--light-text-color); }
-        .kpi-card .value { font-size: 2.2em; font-weight: 700; color: var(--primary-color); }
-
-        /* Table */
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ecf0f1; font-size: 0.9em;}
-        th { font-weight: 600; color: var(--light-text-color); }
-        .highlight-row { background-color: #f8f9fa; font-weight: 500; }
-
-        /* Tools & Summaries */
-        .tool-section label { display: block; font-weight: 500; margin-bottom: 8px; font-size: 0.9em; }
-        input[type="range"], input[type="number"] { width: 100%; box-sizing: border-box; }
-        .output-box { background-color: var(--bg-color); padding: 10px; border-radius: 5px; }
-        .output-box h4 { margin: 0 0 5px 0; font-size: 0.8em; font-weight: 500; color: var(--light-text-color); }
-        .output-box p { margin: 0; font-size: 1.2em; font-weight: 600; color: var(--primary-color); }
-        .placeholder-note { font-size: 0.9em; color: var(--warning-color); background-color: #fff9e6; padding: 10px; border-radius: 5px; margin-top: 10px; border-left: 3px solid var(--warning-color); }
-        .insight-text { font-size: 0.9em; color: var(--accent-color); background-color: #ecf0f1; padding: 10px; border-radius: 5px; margin-top: 10px; border-left: 3px solid var(--accent-color); }
-        
-        /* Historical Section */
-        .historical-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
-        .quarterly-summary .output-box .value { font-size: 1.5em; }
-        .quarterly-summary .output-box .label { font-size: 0.9em; }
-        
-        /* Responsive */
-        @media (max-width: 1200px) {
-            .main-grid {
-                grid-template-columns: 1fr 1fr;
-                grid-template-areas: "kpi1 kpi3" "kpi_roas ." "overall overall" "leadgen leadgen" "compare compare" "forecast forecast" "chart chart" "table table";
-            }
+        .table-header { background-color: #374151; }
+        .table-row:hover { background-color: #374151; }
+        .btn-primary {
+            background-color: #3b82f6;
+            transition: background-color 0.3s;
         }
-        @media (max-width: 992px) { .historical-grid { grid-template-columns: 1fr; } }
-        @media (max-width: 768px) {
-            body { padding: 10px; }
-            .main-grid { grid-template-columns: 1fr; grid-template-areas: "kpi1" "kpi3" "kpi_roas" "overall" "leadgen" "compare" "forecast" "chart" "table"; }
+        .btn-primary:hover { background-color: #2563eb; }
+        .nav-link.active {
+            color: white;
+            background-color: rgba(59, 130, 246, 0.2);
+            border-left: 4px solid #3b82f6;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+        .table-container::-webkit-scrollbar { width: 8px; height: 8px; }
+        .table-container::-webkit-scrollbar-track { background: #1f2937; }
+        .table-container::-webkit-scrollbar-thumb {
+            background-color: #4b5563;
+            border-radius: 10px;
+            border: 2px solid #1f2937;
+        }
+        #notification-banner {
+            transition: opacity 0.5s, transform 0.5s;
+        }
+        /* Custom slider styles */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: transparent;
+            cursor: pointer;
+            width: 100%;
+        }
+        input[type=range]:focus {
+            outline: none;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            height: 6px;
+            background: #374151;
+            border-radius: 3px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            margin-top: -5px;
+            height: 16px;
+            width: 16px;
+            background: #3b82f6;
+            border-radius: 50%;
+            border: 2px solid #fff;
         }
     </style>
 </head>
-<body>
-
-    <div class="dashboard-container">
-        <header class="card">
-            <h1 class="card-header" style="font-size: 1.5em; margin-bottom: 0;">Comprehensive Marketing Dashboard</h1>
-        </header>
-
-        <div class="main-grid">
-            <div id="kpi1" class="card kpi-card"><h3>Avg. Cost Per Lead</h3><p class="value" id="kpiCPL">₹63</p></div>
-            <div id="kpi3" class="card kpi-card"><h3>Total Leads (All Time)</h3><p class="value" id="kpiTotalLeads">1,680</p></div>
-            <div id="kpi_roas" class="card kpi-card"><h3>Overall ROAS (Placeholder)</h3><p class="value" id="overallRoasKpi">8.17x</p></div>
-            
-            <div id="overall" class="card">
-                <h2 class="card-header">Overall Monthly Performance</h2>
-                <div class="placeholder-note"><strong>Please Note:</strong> The Revenue and ROAS data below are for demonstration purposes. Please provide your actual revenue figures to populate this section accurately.</div>
-                <div style="height:300px; margin-top: 20px;"><canvas id="overallPerformanceChart"></canvas></div>
-                <table style="margin-top:20px;">
-                    <thead><tr><th>Month</th><th>Total Ad Spend</th><th>Revenue </th><th>ROAS (Placeholder)</th></tr></thead>
-                    <tbody id="overallTableBody"></tbody>
-                </table>
-            </div>
-
-            <div id="leadgen" class="card">
-                <h2 class="card-header">Lead Generation Deep Dive</h2>
-                <div class="historical-grid">
-                    <div><div style="height:300px;"><canvas id="historicalChart"></canvas></div></div>
-                    <div class="quarterly-summary">
-                        <div class="output-box"><div class="label">Q2 (Apr-Jun) Summary</div><p class="value">655 Leads</p><span>Avg. CPL: <strong>₹108</strong></span></div>
-                        <div class="output-box"><div class="label">Q3 (Jul-Sep) Summary</div><p class="value">880 Leads</p><span>Avg. CPL: <strong style="color: var(--success-color);">₹25</strong></span></div>
-                        <p class="insight-text"><strong>Key Insight:</strong> Your campaign efficiency improved dramatically in Q3. The consolidated September campaign was highly effective, bringing the quarterly CPL down significantly.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="compare" class="card">
-                <h2 class="card-header">Scenario Comparison Tool</h2>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                    <div class="tool-section">
-                        <label>Scenario A: <span id="sliderAValue"></span></label><input type="range" min="0" max="55000" value="40000" step="1000" id="sliderA">
-                        <div class="output-box" style="margin-top:10px;"><h4>Leads: <span id="leadsA"></span></h4><p>Influencers: <span id="influencerA"></span></p></div>
-                    </div>
-                    <div class="tool-section">
-                        <label>Scenario B: <span id="sliderBValue"></span></label><input type="range" min="0" max="55000" value="25000" step="1000" id="sliderB">
-                        <div class="output-box" style="margin-top:10px;"><h4>Leads: <span id="leadsB"></span></h4><p>Influencers: <span id="influencerB"></span></p></div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="forecast" class="card">
-                <h2 class="card-header">Predictive Analysis</h2>
-                <div class="tool-section">
-                    <label for="leadTarget">Enter Monthly Lead Target:</label><input type="number" id="leadTarget" value="500">
-                </div>
-                 <div class="output-box"><h4>Predicted Monthly Budget</h4><p id="predictedMonthly">₹31,500</p></div>
-            </div>
-
-            <div id="chart" class="card">
-                 <h2 class="card-header">Budget Split Visualizer</h2>
-                 <div style="height:250px;"><canvas id="budgetChart"></canvas></div>
-            </div>
-            
-            <div id="table" class="card">
-                <h2 class="card-header">Allocation Scenarios</h2>
-                <table>
-                    <thead><tr><th>Scenario</th><th>Ad Budget</th><th>Influencer Budget</th></tr></thead>
-                    <tbody>
-                        <tr><td>Aggressive</td><td>₹45,000</td><td>₹10,000</td></tr>
-                        <tr class="highlight-row"><td>Balanced</td><td>₹35,000</td><td>₹20,000</td></tr>
-                        <tr><td>Influencer-Heavy</td><td>₹25,000</td><td>₹30,000</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
+<body class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="sidebar w-16 md:w-64 flex flex-col items-center md:items-start md:p-4 transition-all duration-300">
+        <div class="flex items-center justify-center md:justify-start w-full mb-8 pt-4">
+             <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold text-xl flex-shrink-0">SP</div>
+            <span class="hidden md:inline ml-3 text-xl font-bold text-white">SylvanPly</span>
         </div>
-    </div>
+        <nav id="sidebar-nav" class="flex flex-col space-y-1 w-full items-center md:items-start">
+            <a href="#" data-target="dashboard" class="nav-link flex items-center p-2 text-gray-400 w-full active">
+                <svg class="h-6 w-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span class="hidden md:inline ml-3">Dashboard</span>
+            </a>
+            <a href="#" data-target="analytics" class="nav-link flex items-center p-2 text-gray-400 hover:bg-gray-700 rounded-lg w-full">
+                <svg class="h-6 w-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                <span class="hidden md:inline ml-3">Analytics</span>
+            </a>
+            <a href="#" data-target="reports" class="nav-link flex items-center p-2 text-gray-400 hover:bg-gray-700 rounded-lg w-full">
+                <svg class="h-6 w-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>
+                <span class="hidden md:inline ml-3">Reports</span>
+            </a>
+             <a href="#" data-target="settings" class="nav-link flex items-center p-2 text-gray-400 hover:bg-gray-700 rounded-lg w-full">
+                <svg class="h-6 w-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924-1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0 3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                <span class="hidden md:inline ml-3">Settings</span>
+            </a>
+        </nav>
+    </aside>
 
-<script>
-    // UPDATED CPL from new data analysis
-    const CPL = 63;
-    const TOTAL_BUDGET = 55000;
+    <!-- Main Content -->
+    <main class="flex-1 p-4 md:p-6 overflow-y-auto">
+        <!-- Notification Banner -->
+        <div id="notification-banner" class="fixed top-5 right-5 bg-green-500 text-white py-2 px-4 rounded-lg shadow-lg opacity-0 transform -translate-y-10">
+            Report downloaded successfully!
+        </div>
 
-    const formatCurrency = (value) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 }).format(value);
+        <!-- Dashboard Content -->
+        <div id="dashboard" class="page-content">
+            <header class="flex flex-col md:flex-row justify-between items-center mb-6">
+                <div>
+                    <h1 class="text-2xl font-bold text-white">Marketing Dashboard</h1>
+                    <p class="text-sm text-gray-400" id="current-date">October 21, 2025</p>
+                </div>
+                <div class="flex items-center space-x-4 mt-4 md:mt-0">
+                    <div class="relative"><input type="text" id="date-range" class="bg-gray-700 text-white rounded-lg pl-8 pr-4 py-1.5 text-sm focus:outline-none" value="Apr 1, 2025 - Oct 21, 2025"><svg class="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></div>
+                </div>
+            </header>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+                 <div class="card p-3 flex flex-col justify-between"><h3 class="text-xs font-medium text-gray-400">Total Revenue</h3><p id="total-revenue" class="text-2xl font-bold text-white">--</p></div>
+                <div class="card p-3 flex flex-col justify-between"><h3 class="text-xs font-medium text-gray-400">Ad Spend</h3><p id="ad-spend" class="text-2xl font-bold text-white">--</p></div>
+                <div class="card p-3 flex flex-col justify-between"><h3 class="text-xs font-medium text-gray-400">ROAS</h3><p id="roas" class="text-2xl font-bold text-white">--</p></div>
+                <div class="card p-3 flex flex-col justify-between"><h3 class="text-xs font-medium text-gray-400">Total Leads</h3><p id="total-leads" class="text-2xl font-bold text-white">--</p></div>
+                <div class="card p-3 flex flex-col justify-between"><h3 class="text-xs font-medium text-gray-400">Cost Per Lead</h3><p id="cpl" class="text-2xl font-bold text-white">--</p></div>
+            </div>
 
-    // --- Overall Performance Data (UPDATED & CONSOLIDATED) ---
-    const monthlyLabels = ['April', 'May', 'June', 'July', 'August', 'September'];
-    const totalMetaSpend = [29600, 29848, 29778, 22230, 22612, 13621]; // Sep includes Oct data
-    const googleSpend = [15000, 15000, 15000, 15000, 15000, 15000]; 
-    const totalCombinedSpend = totalMetaSpend.map((spend, i) => spend + googleSpend[i]);
+            <!-- NEW Interactive Forecaster -->
+            <div class="card p-4 mb-6">
+                 <h3 class="text-base font-semibold mb-4 text-white">Interactive ROAS & Lead Forecaster</h3>
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                    <div>
+                        <label for="ad-spend-slider" class="block text-sm font-medium text-gray-400 mb-2">Simulated Monthly Ad Spend: <span id="ad-spend-value" class="font-bold text-white"></span></label>
+                        <input id="ad-spend-slider" type="range" min="10000" max="100000" value="45000" step="1000" class="w-full">
+                        <div class="grid grid-cols-3 gap-4 mt-4 text-center">
+                            <div><p class="text-xs text-gray-400">Predicted Revenue</p><p id="predicted-revenue" class="text-xl font-bold text-green-400">--</p></div>
+                            <div><p class="text-xs text-gray-400">Predicted ROAS</p><p id="predicted-roas" class="text-xl font-bold text-white">--</p></div>
+                            <div><p class="text-xs text-gray-400">Predicted Leads</p><p id="predicted-leads" class="text-xl font-bold text-blue-400">--</p></div>
+                        </div>
+                    </div>
+                    <div>
+                         <div class="h-48"><canvas id="roasChart"></canvas></div>
+                    </div>
+                 </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+                <div class="card lg:col-span-2 p-4"><h3 class="text-base font-semibold mb-2 text-white">Performance Over Time</h3><div class="h-64"><canvas id="performanceChart"></canvas></div></div>
+                <div class="flex flex-col gap-4">
+                    <div class="card p-4 flex-1 flex flex-col"><h3 class="text-base font-semibold mb-2 text-white">Channel Performance</h3><div class="relative flex-1"><canvas id="channelChart"></canvas></div></div>
+                    <div class="card p-4 flex-1 flex flex-col"><h3 class="text-base font-semibold mb-2 text-white">Device Breakdown</h3><div class="relative flex-1"><canvas id="deviceChart"></canvas></div></div>
+                </div>
+            </div>
+            <div class="card p-4 mb-6"><h3 class="text-base font-semibold mb-2 text-white">Revenue vs. Ad Spend (Q2)</h3><div class="h-64"><canvas id="revenueChart"></canvas></div></div>
+            <div class="card p-4 mb-6">
+                <div class="flex flex-col sm:flex-row justify-between items-center mb-2">
+                    <h3 class="text-base font-semibold text-white mb-2 sm:mb-0">Predictive Analytics: Clicks Forecast</h3>
+                    <div class="flex items-center space-x-2"><label for="forecast-months" class="text-xs text-gray-400">Months to predict:</label><input type="number" id="forecast-months" value="3" min="1" max="12" class="w-14 bg-gray-700 text-white rounded-md p-1 text-center text-sm"><button id="predict-btn" class="btn-primary text-white font-semibold py-1 px-3 rounded-lg text-sm">Predict</button></div>
+                </div>
+                <div class="h-64"><canvas id="forecastChart"></canvas></div>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div class="card p-4"><h3 class="text-base font-semibold mb-2 text-white">Top Queries</h3><div class="table-container overflow-auto max-h-64"><table class="w-full text-sm text-left"><thead class="text-xs text-gray-300 uppercase table-header sticky top-0"><tr><th scope="col" class="px-4 py-2">Query</th><th scope="col" class="px-4 py-2">Clicks</th><th scope="col" class="px-4 py-2">Impressions</th></tr></thead><tbody id="queries-table"></tbody></table></div></div>
+                <div class="card p-4"><h3 class="text-base font-semibold mb-2 text-white">Top Pages</h3><div class="table-container overflow-auto max-h-64"><table class="w-full text-sm text-left"><thead class="text-xs text-gray-300 uppercase table-header sticky top-0"><tr><th scope="col" class="px-4 py-2">Page URL</th><th scope="col" class="px-4 py-2">Clicks</th><th scope="col" class="px-4 py-2">Impressions</th></tr></thead><tbody id="pages-table"></tbody></table></div></div>
+            </div>
+        </div>
+
+        <!-- Analytics Content -->
+        <div id="analytics" class="page-content hidden">
+            <h1 class="text-2xl font-bold text-white mb-6">Analytics Deep Dive</h1>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="card p-4"><h3 class="text-base font-semibold mb-2 text-white">Geographic Performance (Top 10 Countries by Clicks)</h3><div class="h-80"><canvas id="geoChart"></canvas></div></div>
+                <div class="card p-4"><h3 class="text-base font-semibold mb-2 text-white">Search Appearance</h3><div class="h-80"><canvas id="searchAppearanceChart"></canvas></div></div>
+            </div>
+            <div class="card p-4 mt-6">
+                <h3 class="text-base font-semibold mb-2 text-white">Campaign Performance (Google & Meta Ads)</h3>
+                <div class="table-container overflow-auto max-h-96"><table class="w-full text-sm text-left"><thead class="text-xs text-gray-300 uppercase table-header sticky top-0"><tr><th class="px-4 py-2">Campaign Name</th><th class="px-4 py-2">Platform</th><th class="px-4 py-2">Cost (₹)</th><th class="px-4 py-2">Impressions</th><th class="px-4 py-2">Clicks/Engagements</th></tr></thead><tbody id="campaigns-table"></tbody></table></div>
+            </div>
+        </div>
+
+        <!-- Reports Content -->
+        <div id="reports" class="page-content hidden">
+            <header class="flex justify-between items-center mb-6"><h1 class="text-2xl font-bold text-white">Reports</h1><button id="download-report-btn" class="btn-primary text-white font-semibold py-2 px-4 rounded-lg flex items-center"><svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>Download PDF</button></header>
+            <div class="card p-8" id="report-content">
+                <div class="flex justify-between items-center border-b border-gray-600 pb-4 mb-6">
+                    <div><h2 class="text-xl font-bold text-white">Marketing Performance Summary</h2><p class="text-sm text-gray-400">Report for Apr 1, 2025 - Oct 21, 2025</p></div>
+                    <div class="text-lg font-bold">SylvanPly</div>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div class="border border-gray-700 p-3 rounded-lg"><h4 class="text-sm text-gray-400">Total Revenue</h4><p class="text-xl font-bold" id="report-revenue">--</p></div>
+                    <div class="border border-gray-700 p-3 rounded-lg"><h4 class="text-sm text-gray-400">ROAS</h4><p class="text-xl font-bold" id="report-roas">--</p></div>
+                    <div class="border border-gray-700 p-3 rounded-lg"><h4 class="text-sm text-gray-400">Total Clicks</h4><p class="text-xl font-bold" id="report-clicks">--</p></div>
+                    <div class="border border-gray-700 p-3 rounded-lg"><h4 class="text-sm text-gray-400">Total Impressions</h4><p class="text-xl font-bold" id="report-impressions">--</p></div>
+                </div>
+                <div><h3 class="font-semibold text-lg mb-2">Key Takeaways</h3><p class="text-sm text-gray-300">This report summarizes the high-level performance metrics for the specified period. Revenue and ROAS are calculated based on available Q2 data. Organic search remains the primary driver of traffic, with significant contributions from paid campaigns on Google and Meta platforms. Mobile continues to be the dominant device category for user engagement.</p></div>
+            </div>
+        </div>
+
+        <!-- Settings Content -->
+        <div id="settings" class="page-content hidden">
+            <h1 class="text-2xl font-bold text-white mb-6">Settings</h1>
+            <div class="card p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div><h2 class="text-xl font-semibold mb-4">Preferences</h2><div class="space-y-4"><div class="flex items-center justify-between"><label for="dark-mode-toggle" class="text-gray-300">Enable Dark Mode</label><div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"><input type="checkbox" name="toggle" id="dark-mode-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" checked/><label for="toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-600 cursor-pointer"></label></div></div><div class="flex items-center justify-between"><label for="email-notifications" class="text-gray-300">Email Notifications</label><div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"><input type="checkbox" name="toggle" id="email-notifications" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/><label for="toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-600 cursor-pointer"></label></div></div></div></div>
+                <div><h2 class="text-xl font-semibold mb-4">Data Sources</h2><div class="space-y-2"><p class="text-sm text-gray-400">Connected sources:</p><ul class="list-disc list-inside text-sm text-green-400"><li>Google Analytics</li><li>Google Search Console</li><li>Manual CSV Uploads</li></ul></div></div>
+            </div>
+        </div>
+    </main>
     
-    // --- !! PLACEHOLDER REVENUE DATA (CONSOLIDATED) !! ---
-    const revenueData = [451000, 1635000, 179000, 300000, 280000, 400000]; // Sep includes Oct data
-    
-    const roasData = totalCombinedSpend.map((spend, i) => spend > 0 ? (revenueData[i] / spend) : 0);
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // --- DATA ---
+        const performanceData = [ {"Date":"2025-04-01","Clicks":237,"Impressions":7637}, {"Date":"2025-04-02","Clicks":242,"Impressions":7813}, {"Date":"2025-04-03","Clicks":223,"Impressions":7665}, {"Date":"2025-04-04","Clicks":238,"Impressions":7557}, {"Date":"2025-04-05","Clicks":235,"Impressions":7223}, {"Date":"2025-04-06","Clicks":175,"Impressions":7326}, {"Date":"2025-04-07","Clicks":224,"Impressions":7885}, {"Date":"2025-04-08","Clicks":230,"Impressions":7732}, {"Date":"2025-04-09","Clicks":250,"Impressions":7513}, {"Date":"2025-04-10","Clicks":272,"Impressions":7838}, {"Date":"2025-05-01","Clicks":204,"Impressions":7435}, {"Date":"2025-05-02","Clicks":193,"Impressions":7958}, {"Date":"2025-05-03","Clicks":198,"Impressions":7650}, {"Date":"2025-05-04","Clicks":187,"Impressions":7248}, {"Date":"2025-05-05","Clicks":203,"Impressions":8304}, {"Date":"2025-05-06","Clicks":186,"Impressions":7720}, {"Date":"2025-05-07","Clicks":187,"Impressions":7499}, {"Date":"2025-05-08","Clicks":188,"Impressions":7103}, {"Date":"2025-05-09","Clicks":180,"Impressions":6475}, {"Date":"2025-05-10","Clicks":211,"Impressions":6573}, {"Date":"2025-06-01","Clicks":170,"Impressions":7732}, {"Date":"2025-06-02","Clicks":225,"Impressions":8496}, {"Date":"2025-06-03","Clicks":213,"Impressions":9557}, {"Date":"2025-06-04","Clicks":196,"Impressions":7718}, {"Date":"2025-06-05","Clicks":186,"Impressions":7360}, {"Date":"2025-06-06","Clicks":178,"Impressions":7107}, {"Date":"2025-06-07","Clicks":182,"Impressions":7141}, {"Date":"2025-06-08","Clicks":190,"Impressions":7419}, {"Date":"2025-06-09","Clicks":254,"Impressions":8350}, {"Date":"2025-06-10","Clicks":223,"Impressions":8214}, {"Date":"2025-07-01","Clicks":260,"Impressions":8826}, {"Date":"2025-07-02","Clicks":251,"Impressions":8560}, {"Date":"2025-07-03","Clicks":215,"Impressions":7925}, {"Date":"2025-07-04","Clicks":195,"Impressions":7808}, {"Date":"2025-07-05","Clicks":196,"Impressions":7623}, {"Date":"2025-07-06","Clicks":185,"Impressions":7548}, {"Date":"2025-07-07","Clicks":208,"Impressions":8507}, {"Date":"2025-07-08","Clicks":223,"Impressions":8403}, {"Date":"2025-07-09","Clicks":211,"Impressions":8269}, {"Date":"2025-07-10","Clicks":217,"Impressions":8237}, {"Date":"2025-08-01","Clicks":196,"Impressions":7670}, {"Date":"2025-08-02","Clicks":186,"Impressions":7295}, {"Date":"2025-08-03","Clicks":163,"Impressions":7658}, {"Date":"2025-08-04","Clicks":260,"Impressions":8869}, {"Date":"2025-08-05","Clicks":230,"Impressions":8873}, {"Date":"2025-08-06","Clicks":240,"Impressions":8354}, {"Date":"2025-08-07","Clicks":229,"Impressions":8374}, {"Date":"2025-08-08","Clicks":152,"Impressions":7497}, {"Date":"2025-08-09","Clicks":173,"Impressions":7227}, {"Date":"2025-08-10","Clicks":223,"Impressions":8313}, {"Date":"2025-09-01","Clicks":258,"Impressions":10526}, {"Date":"2025-09-02","Clicks":223,"Impressions":9804}, {"Date":"2025-09-03","Clicks":250,"Impressions":9494}, {"Date":"2025-09-04","Clicks":250,"Impressions":9598}, {"Date":"2025-09-05","Clicks":209,"Impressions":9066}, {"Date":"2025-09-06","Clicks":221,"Impressions":9563}, {"Date":"2025-09-07","Clicks":186,"Impressions":9925}, {"Date":"2025-09-08","Clicks":272,"Impressions":10846}, {"Date":"2025-09-09","Clicks":261,"Impressions":10519}, {"Date":"2025-09-10","Clicks":269,"Impressions":9933} ];
+        const adSpendData = { "MARCH": 15000, "APRIL": 15000, "MAY": 15000, "JUNE": 15000 };
+        const revenueData = { "APRIL": 1614551, "MAY": 1496665, "JUNE": 1049175, "JULY": 671221, "AUGUST": 1512953, "SEPTEMBER": 1235692 };
+        const channelData = { "Organic": 1103 + 5761, "CPC": 536 + 4717 + 1802 + 1448 + 10409 + 7758 + 19258 + 3464, "Referral": 707 };
+        const deviceData = { "Mobile": 15504 + 15436, "Desktop": 4644 + 4275, "Tablet": 107 + 109 };
+        const topQueriesData = [ {"Query":"sylvan ply","Clicks":2008,"Impressions":4244}, {"Query":"sylvan plywood","Clicks":1461,"Impressions":3057}, {"Query":"best plywood brands in india","Clicks":872,"Impressions":3378}, {"Query":"best plywood in india","Clicks":538,"Impressions":6304}, {"Query":"plywood brands in india","Clicks":286,"Impressions":1546}, {"Query":"top plywood brands in india","Clicks":237,"Impressions":2000}, {"Query":"top 10 plywood brands in india","Clicks":206,"Impressions":2015} ];
+        const topPagesData = [ {"Page":"/blog_details/top-10-plywood-manufacturers-in-india","Clicks":7012,"Impressions":190132}, {"Page":"/","Clicks":4249,"Impressions":47002}, {"Page":"/blog_details/top-10-wooden-fire-rated-door-companies-in-india","Clicks":675,"Impressions":22101}, {"Page":"/blog_details/best-quality-plywood","Clicks":632,"Impressions":26803}, {"Page":"/blog_details/no-1-waterproof-plywood-india","Clicks":623,"Impressions":23970}, {"Page":"/blog_details/plywood-strongest","Clicks":502,"Impressions":43016}, {"Page":"/contact","Clicks":466,"Impressions":17431} ];
+        const topCountriesData = [ {"Country":"India","Clicks":18128+18146}, {"Country":"United States","Clicks":824+623}, {"Country":"United Kingdom","Clicks":133+107}, {"Country":"Canada","Clicks":128+97}, {"Country":"United Arab Emirates","Clicks":67+60}, {"Country":"Philippines","Clicks":60+53}, {"Country":"Australia","Clicks":62+47}, {"Country":"France","Clicks":40+46}, {"Country":"Singapore","Clicks":40+44}, {"Country":"Germany","Clicks":29+32}];
+        const searchAppearanceData = { "Translated results": 482+662, "Product snippets": 0 };
+        const allCampaignsData = [ {"name":"Julekha Leads-Display - 26/04/2025","platform":"Google","cost":2676.02,"impressions":51621,"clicks":1978}, {"name":"Julekha Demand Gen - 2025-04-26","platform":"Google","cost":4999.15,"impressions":324040,"clicks":19165}, {"name":"Website traffic souvik 26/04/2025","platform":"Meta","cost":5821.24,"impressions":97623,"clicks":33293}, {"name":"Julekha Leads - Forms Ads - 29/04/2025","platform":"Meta","cost":6362.26,"impressions":53361,"clicks":241, "leads": 54} ];
+        const metaLeadsData = [ { "campaign": "Julekha Leads - Forms Ads - 29/04/2025", "leads": 54 }, { "campaign": "Test - Julekha Leads - Forms Ads - 26/04/2025", "leads": 593 } ];
 
-    const overallTableBody = document.getElementById('overallTableBody');
-    monthlyLabels.forEach((month, i) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${month}</td>
-            <td>${formatCurrency(totalCombinedSpend[i])}</td>
-            <td>${formatCurrency(revenueData[i])}</td>
-            <td>${roasData[i].toFixed(2)}x</td>
-        `;
-        overallTableBody.appendChild(row);
-    });
-    
-    const totalRevenue = revenueData.reduce((a, b) => a + b, 0);
-    const totalSpendOverall = totalCombinedSpend.reduce((a, b) => a + b, 0);
-    const overallRoas = totalSpendOverall > 0 ? (totalRevenue / totalSpendOverall) : 0;
-    document.getElementById('overallRoasKpi').innerText = `${overallRoas.toFixed(2)}x`;
-    
-    new Chart(document.getElementById('overallPerformanceChart'), {
-        type: 'bar',
-        data: {
-            labels: monthlyLabels,
-            datasets: [
-                { label: 'Total Ad Spend', data: totalCombinedSpend, backgroundColor: '#7f8c8d', yAxisID: 'y' },
-                { label: 'Revenue', data: revenueData, backgroundColor: '#27ae60', yAxisID: 'y' },
-                { label: 'ROAS', data: roasData, type: 'line', borderColor: '#c0392b', yAxisID: 'y1', tension: 0.3 }
-            ]
-        },
-        options: {
-            responsive: true, maintainAspectRatio: false,
-            scales: {
-                y: { type: 'linear', position: 'left', title: { display: true, text: 'Amount (₹)' } },
-                y1: { type: 'linear', position: 'right', title: { display: true, text: 'ROAS (x)' }, grid: { drawOnChartArea: false } }
-            }
-        }
-    });
+        // --- Date Header ---
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
-    // --- Lead Generation Deep Dive Data & Chart (UPDATED, CONSOLIDATED & SIMPLIFIED CHART) ---
-    const historicalData = {
-        labels: ['April', 'May', 'June', 'July', 'August', 'September'],
-        spend: [23778, 23373, 23274, 13137, 15542, 5953], // Sep includes Oct
-        leads: [187, 275, 193, 254, 266, 505], // Sep includes Oct
-        cpl: [127, 85, 121, 52, 58, 12] // Sep includes Oct
-    };
-    const totalLeadsAllTime = historicalData.leads.reduce((a,b) => a+b, 0);
-    document.getElementById('kpiCPL').innerText = formatCurrency(CPL);
-    document.getElementById('kpiTotalLeads').innerText = totalLeadsAllTime.toLocaleString('en-IN');
-    
-    new Chart(document.getElementById('historicalChart'), {
-        type: 'bar',
-        data: {
-            labels: historicalData.labels,
-            datasets: [
-                {
-                    label: 'Ad Spend',
-                    data: historicalData.spend,
-                    backgroundColor: 'rgba(127, 140, 141, 0.6)',
-                    yAxisID: 'y'
-                },
-                {
-                    label: 'Cost Per Lead (CPL)',
-                    data: historicalData.cpl,
-                    type: 'line',
-                    borderColor: '#e67e22',
-                    backgroundColor: '#e67e22',
-                    yAxisID: 'y1',
-                    tension: 0.3
-                }
-            ]
-        },
-        options: {
-            responsive: true, maintainAspectRatio: false,
-            scales: {
-                y: { position: 'left', title: { display: true, text: 'Ad Spend (₹)' } },
-                y1: { position: 'right', title: { display: true, text: 'CPL (₹)' }, grid: { drawOnChartArea: false } }
-            }
-        }
-    });
-
-    // --- Scenario Comparison Tool ---
-    const sliderA = document.getElementById('sliderA');
-    const sliderB = document.getElementById('sliderB');
-    function updateComparisonTool() {
-        const valA = parseInt(sliderA.value), valB = parseInt(sliderB.value);
-        document.getElementById('sliderAValue').innerText = formatCurrency(valA);
-        document.getElementById('sliderBValue').innerText = formatCurrency(valB);
+        // --- KPI Calculations & Population ---
+        const totalAdSpend = allCampaignsData.reduce((s, c) => s + c.cost, 0);
+        const totalRevenue = Object.values(revenueData).reduce((s, i) => s + i, 0);
+        const totalLeads = metaLeadsData.reduce((s, c) => s + c.leads, 0);
+        const overallRoas = totalAdSpend > 0 ? (totalRevenue / totalAdSpend) : 0;
+        const cpl = totalLeads > 0 ? (totalAdSpend / totalLeads) : 0;
         
-        const leadsA = Math.floor(valA / CPL), influencerA = TOTAL_BUDGET - valA;
-        document.getElementById('leadsA').innerText = leadsA.toLocaleString('en-IN');
-        document.getElementById('influencerA').innerText = formatCurrency(influencerA);
+        const formatIndianCurrency = (num) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(num);
+        const formatLargeNumber = (num) => new Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3, notation: 'compact' }).format(num);
 
-        const leadsB = Math.floor(valB / CPL), influencerB = TOTAL_BUDGET - valB;
-        document.getElementById('leadsB').innerText = leadsB.toLocaleString('en-IN');
-        document.getElementById('influencerB').innerText = formatCurrency(influencerB);
-    }
-    sliderA.addEventListener('input', updateComparisonTool);
-    sliderB.addEventListener('input', updateComparisonTool);
+        document.getElementById('total-revenue').textContent = formatLargeNumber(totalRevenue);
+        document.getElementById('ad-spend').textContent = formatLargeNumber(totalAdSpend);
+        document.getElementById('roas').textContent = overallRoas.toFixed(2) + 'x';
+        document.getElementById('total-leads').textContent = totalLeads.toLocaleString('en-IN');
+        document.getElementById('cpl').textContent = formatIndianCurrency(cpl);
 
-    // --- Predictive Analysis Tool ---
-    const leadTargetInput = document.getElementById('leadTarget');
-    function updatePredictionTool() {
-        const target = parseInt(leadTargetInput.value) || 0;
-        document.getElementById('predictedMonthly').innerText = formatCurrency(target * CPL);
-    }
-    leadTargetInput.addEventListener('input', updatePredictionTool);
+        const totalClicks = performanceData.reduce((s, i) => s + i.Clicks, 0);
+        const totalImpressions = performanceData.reduce((s, i) => s + i.Impressions, 0);
+        document.getElementById('report-revenue').textContent = formatIndianCurrency(totalRevenue);
+        document.getElementById('report-roas').textContent = overallRoas.toFixed(2) + 'x';
+        document.getElementById('report-clicks').textContent = totalClicks.toLocaleString('en-IN');
+        document.getElementById('report-impressions').textContent = totalImpressions.toLocaleString('en-IN');
+        
+        // --- Populate Tables ---
+        const populateTable = (tableId, data, columns) => {
+            const tableBody = document.getElementById(tableId);
+            tableBody.innerHTML = '';
+            data.forEach(item => {
+                const row = tableBody.insertRow();
+                row.className = 'table-row border-b border-gray-700';
+                let rowHTML = '';
+                columns.forEach(col => {
+                    rowHTML += `<td class="px-4 py-3 ${col.isNumeric ? '' : 'font-medium text-white whitespace-nowrap'}">${col.formatter ? col.formatter(item[col.key]) : item[col.key]}</td>`;
+                });
+                row.innerHTML = rowHTML;
+            });
+        };
 
-    // --- Budget Split Chart ---
-    new Chart(document.getElementById('budgetChart'), {
-        type: 'bar',
-        data: {
-            labels: ['Aggressive', 'Balanced', 'Influencer-Heavy'],
-            datasets: [
-                { label: 'Ad Spend', data: [45000, 35000, 25000], backgroundColor: '#3498db' },
-                { label: 'Influencer Spend', data: [10000, 20000, 30000], backgroundColor: '#95a5a6' }
-            ]
-        },
-        options: {
-            responsive: true, maintainAspectRatio: false,
-            scales: { x: { stacked: true }, y: { stacked: true, ticks: { callback: (value) => `₹${value/1000}k` } } }
-        }
+        populateTable('queries-table', topQueriesData, [{key: 'Query'}, {key: 'Clicks', isNumeric: true, formatter: (d) => d.toLocaleString('en-IN')}, {key: 'Impressions', isNumeric: true, formatter: (d) => d.toLocaleString('en-IN')}]);
+        populateTable('pages-table', topPagesData, [{key: 'Page'}, {key: 'Clicks', isNumeric: true, formatter: (d) => d.toLocaleString('en-IN')}, {key: 'Impressions', isNumeric: true, formatter: (d) => d.toLocaleString('en-IN')}]);
+        populateTable('campaigns-table', allCampaignsData, [{key: 'name'}, {key: 'platform'}, {key: 'cost', isNumeric: true, formatter: (d) => formatIndianCurrency(d)}, {key: 'impressions', isNumeric: true, formatter: (d) => d.toLocaleString('en-IN')}, {key: 'clicks', isNumeric: true, formatter: (d) => d.toLocaleString('en-IN')}]);
+        
+        // --- Chart Configs ---
+        const monthlyData = performanceData.reduce((acc, item) => { const month = new Date(item.Date).toLocaleString('default', { month: 'short', year: '2-digit' }); if (!acc[month]) acc[month] = { Clicks: 0, Impressions: 0 }; acc[month].Clicks += item.Clicks; acc[month].Impressions += item.Impressions; return acc; }, {});
+        const chartLabels = Object.keys(monthlyData);
+        const clicksData = chartLabels.map(month => monthlyData[month].Clicks);
+        const impressionsData = chartLabels.map(month => monthlyData[month].Impressions);
+        const chartOptions = (isDonut = false) => ({ responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#d1d5db', boxWidth: 10, font: { size: 12 } }, position: isDonut ? 'top' : 'bottom', align: 'start' }, tooltip: { bodyFont: { size: 12 }, titleFont: { size: 14 } } }, scales: isDonut ? {} : { x: { ticks: { color: '#9ca3af', font: {size: 10} }, grid: { color: 'rgba(255, 255, 255, 0.05)' } }, y: { ticks: { color: '#9ca3af', font: {size: 10} }, grid: { color: 'rgba(255, 255, 255, 0.1)' } } } });
+
+        // --- Initialize Charts ---
+        new Chart(document.getElementById('performanceChart'), { type: 'line', data: { labels: chartLabels, datasets: [ { label: 'Clicks', data: clicksData, borderColor: '#3b82f6', tension: 0.3, fill: false }, { label: 'Impressions', data: impressionsData, borderColor: '#8b5cf6', tension: 0.3, fill: false } ] }, options: chartOptions() });
+        new Chart(document.getElementById('channelChart'), { type: 'doughnut', data: { labels: Object.keys(channelData), datasets: [{ data: Object.values(channelData), backgroundColor: ['#3b82f6', '#8b5cf6', '#10b981'], borderColor: '#1f2937' }] }, options: chartOptions(true) });
+        new Chart(document.getElementById('deviceChart'), { type: 'doughnut', data: { labels: Object.keys(deviceData), datasets: [{ data: Object.values(deviceData), backgroundColor: ['#ef4444', '#f97316', '#eab308'], borderColor: '#1f2937' }] }, options: chartOptions(true) });
+        new Chart(document.getElementById('revenueChart'), { type: 'bar', data: { labels: ['April', 'May', 'June'], datasets: [ { label: 'Revenue (₹)', data: [revenueData.APRIL, revenueData.MAY, revenueData.JUNE], backgroundColor: '#10b981' }, { label: 'Ad Spend (₹)', data: [adSpendData.APRIL, adSpendData.MAY, adSpendData.JUNE], backgroundColor: '#3b82f6' } ] }, options: { ...chartOptions(), scales: { x: { ticks: { color: '#9ca3af', font: {size: 10} }, grid: { display: false } }, y: { ticks: { color: '#9ca3af', font: {size: 10}, callback: (value) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', notation: 'compact' }).format(value) }, grid: { color: 'rgba(255, 255, 255, 0.1)' } } } } });
+        new Chart(document.getElementById('searchAppearanceChart'), { type: 'bar', data: { labels: Object.keys(searchAppearanceData), datasets: [{ label: 'Clicks', data: Object.values(searchAppearanceData), backgroundColor: ['#10b981', '#ef4444'] }] }, options: { ...chartOptions(), indexAxis: 'y' } });
+        
+        // ROAS Chart
+        const roasMonths = ['April', 'May', 'June'];
+        const monthlyRoas = roasMonths.map(m => {
+            const monthUpper = m.toUpperCase();
+            const spend = adSpendData[monthUpper] || 0;
+            const rev = revenueData[monthUpper] || 0;
+            return spend > 0 ? rev / spend : 0;
+        });
+        new Chart(document.getElementById('roasChart'), { type: 'line', data: { labels: roasMonths, datasets: [{ label: 'Monthly ROAS', data: monthlyRoas, borderColor: '#f97316', tension: 0.3, fill: false }] }, options: { ...chartOptions(), plugins: {legend: { display: false }}, scales: { ...chartOptions().scales, y: { ...chartOptions().scales.y, title: { display: true, text: 'ROAS (x)', color: '#9ca3af', font:{size:10} } } } } });
+
+        // --- Geo Chart ---
+        fetch('https://unpkg.com/world-atlas/countries-110m.json').then(r => r.json()).then(data => { const countries = ChartGeo.topojson.feature(data, data.objects.countries).features; const countryNameMap = { "United States": "United States of America" }; const chartData = countries.map(d => ({ feature: d, value: (topCountriesData.find(c => (countryNameMap[c.Country] || c.Country) === d.properties.name) || {}).Clicks || 0 })); new Chart(document.getElementById('geoChart').getContext('2d'), { type: 'choropleth', data: { labels: countries.map(d => d.properties.name), datasets: [{ label: 'Countries', data: chartData }] }, options: { ...chartOptions(), showOutline: true, showGraticule: false, plugins: { legend: { display: false } }, scales: { xy: { projection: 'equalEarth' }, color: { axis: 'x', interpolate: 'Blues', legend: { position: 'bottom', align: 'start' } } } } }); });
+
+        // --- Predictive Analytics ---
+        let forecastChart;
+        function linearRegression(x, y) { const n = x.length; let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0; for (let i = 0; i < n; i++) { sumX += x[i]; sumY += y[i]; sumXY += x[i] * y[i]; sumXX += x[i] * x[i]; } const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX); const intercept = (sumY - slope * sumX) / n; return { slope, intercept }; }
+        function createForecast() { const historicalMonths = chartLabels.length; const x = Array.from({ length: historicalMonths }, (_, i) => i); const y = clicksData; const { slope, intercept } = linearRegression(x, y); const monthsToPredict = parseInt(document.getElementById('forecast-months').value, 10); const futureLabels = [], futureData = []; const lastDate = new Date(`01-${chartLabels[chartLabels.length - 1].replace("'","20")}`); for (let i = 1; i <= monthsToPredict; i++) { lastDate.setMonth(lastDate.getMonth() + 1); futureLabels.push(lastDate.toLocaleString('default', { month: 'short', year: '2-digit' })); futureData.push(Math.round(slope * (historicalMonths + i - 1) + intercept)); } if (forecastChart) forecastChart.destroy(); forecastChart = new Chart(document.getElementById('forecastChart'), { type: 'line', data: { labels: [...chartLabels, ...futureLabels], datasets: [ { label: 'Historical Clicks', data: [...clicksData, ...Array(monthsToPredict).fill(null)], borderColor: '#3b82f6', tension: 0.3 }, { label: 'Forecasted Clicks', data: [...Array(historicalMonths - 1).fill(null), clicksData[historicalMonths - 1], ...futureData], borderColor: '#10b981', borderDash: [5, 5], tension: 0.3 } ] }, options: chartOptions() }); }
+        document.getElementById('predict-btn').addEventListener('click', createForecast);
+        createForecast();
+
+        // --- Interactive Slider ---
+        const adSpendSlider = document.getElementById('ad-spend-slider');
+        const updateForecastMetrics = () => {
+            const spend = parseFloat(adSpendSlider.value);
+            document.getElementById('ad-spend-value').textContent = formatIndianCurrency(spend);
+            const predictedRevenue = spend * overallRoas;
+            const predictedLeads = spend / cpl;
+            document.getElementById('predicted-revenue').textContent = formatLargeNumber(predictedRevenue);
+            document.getElementById('predicted-roas').textContent = overallRoas.toFixed(2) + 'x';
+            document.getElementById('predicted-leads').textContent = Math.round(predictedLeads).toLocaleString('en-IN');
+        };
+        adSpendSlider.addEventListener('input', updateForecastMetrics);
+        updateForecastMetrics();
+
+        // --- Tab Navigation ---
+        const navLinks = document.querySelectorAll('.nav-link');
+        const pageContents = document.querySelectorAll('.page-content');
+        navLinks.forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); const targetId = link.getAttribute('data-target'); pageContents.forEach(c => c.id === targetId ? c.classList.remove('hidden') : c.classList.add('hidden')); navLinks.forEach(l => l.classList.remove('active', 'text-white')); link.classList.add('active', 'text-white'); }); });
+
+        // --- Download Report ---
+        document.getElementById('download-report-btn').addEventListener('click', () => { const banner = document.getElementById('notification-banner'); banner.classList.remove('opacity-0', '-translate-y-10'); setTimeout(() => { banner.classList.add('opacity-0', '-translate-y-10'); }, 3000); });
     });
-    
-    // --- Initial function calls ---
-    updateComparisonTool();
-    updatePredictionTool();
-</script>
+    </script>
 </body>
 </html>
 
